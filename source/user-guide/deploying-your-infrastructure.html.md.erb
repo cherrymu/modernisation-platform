@@ -1,9 +1,18 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Deploying Your Infrastructure
-last_reviewed_on: 2022-09-02
+last_reviewed_on: 2024-10-07
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
@@ -35,6 +44,13 @@ Here is a high level diagram of what the workflow file does.
  - a [Terraform plan](https://www.terraform.io/docs/cli/commands/plan.html) on the `preproduction` and `production` environments (if you have them).
  - a [Terraform apply](https://www.terraform.io/docs/cli/commands/apply.html) on the `preproduction` and `production` environments (if you have them), which is held until a reviewer from your GitHub team approves the deployment.
 
+### Jobs on a manual trigger
+
+ - a [Terraform plan](https://www.terraform.io/docs/cli/commands/plan.html) on the `development` and `test` environments (if you have them), if your action is manually triggered with the `deploy` action.
+ - a [Terraform apply](https://www.terraform.io/docs/cli/commands/apply.html) on the `development` and `test` environments (if you have them), if your action was manually triggered with the `deploy` action, which is held until a reviewer from your GitHub team approves the deployment.
+ - a [Terraform plan destroy](https://developer.hashicorp.com/terraform/cli/commands/plan#planning-modes) on the `development` and `test` environments (if you have them), if your action is manually triggered with the `destroy` action.
+ - a [Terraform apply destroy](https://developer.hashicorp.com/terraform/cli/commands/destroy) on the `development` and `test` environments (if you have them), if your action was manually triggered with the `destroy` action, which is held until a reviewer from your GitHub team approves the deployment.
+
 ### Viewing Terraform plans
 
 1. Navigate to the [Actions](https://github.com/ministryofjustice/modernisation-platform-environments/actions) tab in the environments repository.
@@ -51,6 +67,8 @@ The Modernisation Platform uses [Terraform Workspaces](https://www.terraform.io/
 1. Click on the `Review deployments` button
 1. Tick the box and `Approve and deploy`
 1. The `Deploy <environment> - <application>` job will then run and deploy your infrastructure.  Any issues or failures can been seen in this job.
+
+> Warning: Once workflows have started please do not cancel them unless it's an emergency. GitHub actions cancels the workflow immediately, which can cause loss or corruption of the Terraform state leading to loss or duplication of infrastructure.
 
 ### Checks
 

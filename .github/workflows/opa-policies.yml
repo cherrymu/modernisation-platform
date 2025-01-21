@@ -6,25 +6,46 @@ on:
     branches:
       - main
     paths:
+      - '**.json'
+      - '**.rego'
       - 'scripts/tests/validate/run-opa-tests.sh'
-      - 'policies/**.rego'
-      - 'environments-networks/**.json'
-      - 'environments/**.json'
-      - '.github/workflows/opa-policies.yml'
+  merge_group:
+    types: [checks_requested]
+    paths:
+      - '**.json'
+      - '**.rego'
+      - 'scripts/tests/validate/run-opa-tests.sh'
+
+permissions:
+  contents: read
+  pull-requests: write
 
 defaults:
   run:
     shell: bash
 
+env:
+  GH_TOKEN: ${{ github.token }}
+  GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+
 jobs:
   run-opa-policy-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Get changed files/directories and add PR comment for high risk changes
+        run: bash scripts/pr-warning-comments.sh          
+      - name: Setup Regal
+        uses: styrainc/setup-regal@33a142b1189004e0f14bf42b15972c67eecce776 # v1.0.0
+        with:
+          version: latest
+      - name: Run Regal Lint
+        run: regal lint --format=github policies
       - name: Install Conftest
         run: |
-          wget https://github.com/open-policy-agent/conftest/releases/download/v0.21.0/conftest_0.21.0_Linux_x86_64.tar.gz
-          tar xzf conftest_0.21.0_Linux_x86_64.tar.gz
+          wget https://github.com/open-policy-agent/conftest/releases/download/v0.53.0/conftest_0.53.0_Linux_x86_64.tar.gz
+          tar xzf conftest_0.53.0_Linux_x86_64.tar.gz
           sudo mv conftest /usr/local/bin
       - name: Run Conftest
         run: bash scripts/tests/validate/run-opa-tests.sh

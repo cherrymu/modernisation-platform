@@ -1,0 +1,41 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "sandbox"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "developer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "wardship",
+    "business-unit": "HMCTS",
+    "infrastructure-support": "DTS-ITServiceDesk@justice.gov.uk",
+    "owner": "DTS-ITServiceDesk@justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": ["ministryofjustice/Wardship"],
+  "go-live-date": "2023-12-22"
+}

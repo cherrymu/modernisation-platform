@@ -17,6 +17,7 @@ resource "aws_kms_alias" "s3_logging_cloudtrail" {
 data "aws_iam_policy_document" "kms_logging_cloudtrail" {
 
   # checkov:skip=CKV_AWS_111: "policy is directly related to the resource"
+  # checkov:skip=CKV_AWS_356: "policy is directly related to the resource"
   # checkov:skip=CKV_AWS_109: "role is resticted by limited actions in member account"
 
   statement {
@@ -79,6 +80,19 @@ data "aws_iam_policy_document" "kms_logging_cloudtrail" {
       identifiers = ["logs.amazonaws.com"]
     }
   }
+  statement {
+    sid    = "Allow use of the key by SQS"
+    effect = "Allow"
+    actions = [
+      "kms:Describe*",
+      "kms:Decrypt*"
+    ]
+    resources = [aws_sqs_queue.mp_cloudtrail_log_queue.arn]
+    principals {
+      type        = "Service"
+      identifiers = ["sqs.amazonaws.com"]
+    }
+  }
 
   statement {
     sid    = "Allow key decryption to STS bucket replication roles"
@@ -116,6 +130,7 @@ resource "aws_kms_alias" "s3_logging_cloudtrail_eu-west-1_replication" {
 data "aws_iam_policy_document" "kms_logging_cloudtrail_replication" {
 
   # checkov:skip=CKV_AWS_111: "policy is directly related to the resource"
+  # checkov:skip=CKV_AWS_356: "policy is directly related to the resource"
   # checkov:skip=CKV_AWS_109: "role is resticted by limited actions in member account"
 
   statement {
@@ -153,27 +168,22 @@ data "aws_iam_policy_document" "kms_logging_cloudtrail_replication" {
   }
 }
 
-module "cloudtrail-s3-replication-role" {
-  source             = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket-replication-role?ref=v3.0.0"
-  buckets            = [module.s3-bucket-cloudtrail.bucket.arn]
-  replication_bucket = "modernisation-platform-logs-cloudtrail-replication"
-  suffix_name        = "-cloudtrail"
-  tags               = local.tags
-}
 
 module "s3-bucket-cloudtrail" {
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=v6.2.0"
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=cadab519b10a7d28dfa3b77d407725db6b37614a" # v8.0.0
   providers = {
     aws.bucket-replication = aws.modernisation-platform-eu-west-1
   }
   bucket_policy              = [data.aws_iam_policy_document.cloudtrail_bucket_policy.json]
   bucket_name                = "modernisation-platform-logs-cloudtrail"
+  replication_bucket         = "modernisation-platform-logs-cloudtrail-replication"
+  suffix_name                = "-cloudtrail"
   custom_kms_key             = aws_kms_key.s3_logging_cloudtrail.arn
   custom_replication_kms_key = aws_kms_key.s3_logging_cloudtrail_eu-west-1_replication.arn
 
-  replication_enabled                      = true
-  replication_region                       = "eu-west-1"
-  versioning_enabled_on_replication_bucket = true
+  replication_enabled = true
+  replication_region  = "eu-west-1"
+  versioning_enabled  = true
 
   lifecycle_rule = [
     {
@@ -206,9 +216,8 @@ module "s3-bucket-cloudtrail" {
       }
     }
   ]
-  log_bucket           = module.s3-bucket-cloudtrail-logging.bucket.id
-  replication_role_arn = module.cloudtrail-s3-replication-role.role.arn
-  tags                 = local.tags
+  log_bucket = module.s3-bucket-cloudtrail-logging.bucket.id
+  tags       = local.tags
 }
 # Allow access to the bucket from the MoJ root account
 # Policy extrapolated from:
@@ -286,28 +295,22 @@ data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
   }
 }
 
-module "cloudtrail-s3-logging-replication-role" {
-  source             = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket-replication-role?ref=v3.0.0"
-  buckets            = [module.s3-bucket-cloudtrail-logging.bucket.arn]
-  replication_bucket = "modernisation-platform-logs-cloudtrail-logging-replication"
-  suffix_name        = "-cloudtrail-logging"
-  tags               = local.tags
-}
-
 module "s3-bucket-cloudtrail-logging" {
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=v6.2.0"
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=cadab519b10a7d28dfa3b77d407725db6b37614a" # v8.0.0
   providers = {
     aws.bucket-replication = aws.modernisation-platform-eu-west-1
   }
 
   acl                        = "log-delivery-write"
   bucket_name                = "modernisation-platform-logs-cloudtrail-logging"
+  replication_bucket         = "modernisation-platform-logs-cloudtrail-logging-replication"
+  suffix_name                = "-cloudtrail-logging"
   custom_kms_key             = aws_kms_key.s3_logging_cloudtrail.arn
   custom_replication_kms_key = aws_kms_key.s3_logging_cloudtrail_eu-west-1_replication.arn
 
-  replication_enabled                      = true
-  replication_region                       = "eu-west-1"
-  versioning_enabled_on_replication_bucket = true
+  replication_enabled = true
+  replication_region  = "eu-west-1"
+  versioning_enabled  = true
 
   lifecycle_rule = [
     {
@@ -341,6 +344,5 @@ module "s3-bucket-cloudtrail-logging" {
     }
   ]
 
-  replication_role_arn = module.cloudtrail-s3-logging-replication-role.role.arn
-  tags                 = local.tags
+  tags = local.tags
 }

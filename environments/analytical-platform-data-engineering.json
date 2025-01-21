@@ -1,0 +1,54 @@
+{
+  "account-type": "member-unrestricted",
+  "environments": [
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform-data-engineering-production-administrator",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "analytical-platform-data-engineering-production-data-engineer",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "analytical-platform-data-engineering-production-developer",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "data-platform-audit-and-security",
+          "level": "security-audit"
+        }
+      ]
+    },
+    {
+      "name": "sandboxa",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform-data-engineering-sandboxa-administrator",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "analytical-platform-data-engineering-sandboxa-data-engineer",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "analytical-platform-data-engineering-sandboxa-developer",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "data-platform-audit-and-security",
+          "level": "security-audit"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "analytical-platform-data-engineering",
+    "business-unit": "Platforms",
+    "infrastructure-support": "analytical_platform@digital.justice.gov.uk",
+    "owner": "Analytical Platform: analytical_platform@digital.justice.gov.uk"
+  },
+  "github-oidc-team-repositories": [""]
+}

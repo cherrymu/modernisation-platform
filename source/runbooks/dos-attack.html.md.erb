@@ -1,21 +1,30 @@
 ---
 owner_slack: "#modernisation-platform"
 title: DoS or DDoS Attack
-last_reviewed_on: 2022-05-05
+last_reviewed_on: 2024-09-11
 review_in: 6 months
 ---
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
+
 # <%= current_page.data.title %>
 
-This runbook outlines general steps to take in the event of a Denial of Service (DoS) or Distributed Denial of Service (DDoS) attack. 
+This runbook outlines general steps to take in the event of a Denial of Service (DoS) or Distributed Denial of Service (DDoS) attack.
 
 ## Identification of an attack
 
-DDoS alarms should be configured for all production public facing interfaces, when these alarms are triggered they will send a notification through to the [#modernisation-platform-high-priority-alarms](https://mojdt.slack.com/archives/C03CY6451QT) channel.
+DDoS alarms should be configured for all production public facing interfaces, when these alarms are triggered they will send a notification through to the [#modernisation-platform-high-priority-alarms](https://mojdt.slack.com/archives/C03CY6451QT) channel. Documentation on these alarms can be read [here](https://user-guide.modernisation-platform.service.justice.gov.uk/runbooks/enabling-shield-advanced.html).
 
 ## Create an incident and follow the incident guidance
 
-Follow the [general incident guidance](general-incident.html) to record the incident and gather information.
+Follow the [general incident guidance](./manage-an-incident.html) to record the incident and gather information.
 
 ## DDoS Specific Actions
 
@@ -39,4 +48,4 @@ Alternatively the SRT team can assist with creating these rules.
 
 ## Notify users and security
 
-Follow the [general incident guidance](general-incident.html) to notify users and the security team.
+Follow the [general incident guidance](./manage-an-incident.html#6-end-the-incident) to notify users and the security team.

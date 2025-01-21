@@ -1,9 +1,18 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Repositories
-last_reviewed_on: 2022-05-19
+last_reviewed_on: 2025-01-06
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
@@ -15,18 +24,34 @@ There are two main repositories for the Modernisation Platform:
 
 [modernisation-platform](https://github.com/ministryofjustice/modernisation-platform)
 
-This contains our core infrastructure, Architecture Decision Record (ADR), user guidance, user environment creation and networking definitions and core workflows.
+This contains our core infrastructure, [Architecture Decision Records (ADRs)](https://github.com/ministryofjustice/modernisation-platform/tree/main/architecture-decision-record#modernisation-platform---architecture-decisions), user guidance, user environment creation and networking definitions and core workflows.
 
 ### modernisation-platform-environments
 
 [modernisation-platform-environments](https://github.com/ministryofjustice/modernisation-platform-environments)
 
-This contains user environment resources and workflows. We have this repo so that users can easily find and amend there infrastructure from one place, and we can clearly separate user and core code and workflows.
+This contains user environment resources and workflows. This repo exists so users can easily find and amend their infrastructure in one place, and the Modernisation Platform team can clearly separate user and core code and workflows.
 
 ### Other repositories
 
+#### modernisation-platform-ami-builds
+
+[modernisation-platform-ami-builds](https://github.com/ministryofjustice/modernisation-platform-ami-builds)
+
+Repository for creating pipelines to build AMIs for use on the platform.
+
+#### modernisation-platform-configuration-management
+
+[modernisation-platform-configuration-management](https://github.com/ministryofjustice/modernisation-platform-configuration-management)
+
+Repository for configuration management code used on the platform.
+
 We also have repositories for [Terraform modules](https://www.terraform.io/docs/language/modules/develop/index.html), these modules are an easy way to build up your infrastructure with sensible defaults and we would encourage you to use these where possible.
-You can see a full list of these repositories on the main [modernisation-platform](https://github.com/ministryofjustice/modernisation-platform) readme.
+You can see a full list of these repositories in the [modernisation-platform readme](https://github.com/ministryofjustice/modernisation-platform?tab=readme-ov-file#other-useful-repositories).
+
+## Commit Signing
+
+With the exception of modernisation-platform-environments, all of our managed repositories enforce the use of signed commits when merging to the main branch. For further information please refer to the official github documentation [here](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
 
 ## Diagram
 

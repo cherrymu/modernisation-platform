@@ -1,34 +1,70 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Backups
-last_reviewed_on: 2022-09-26
+last_reviewed_on: 2024-11-18
 review_in: 6 months
 ---
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
+
 # <%= current_page.data.title %>
 
-We use [AWS Backup](https://aws.amazon.com/backup/) to automatically back up production resources accross all the Modernisation Platform environments.
+We use [AWS Backup](https://aws.amazon.com/backup/) to automatically back up production resources across all the Modernisation Platform environments.
 
-## What is backed up?
+AWS Backup supports most common AWS resources, such as EC2 instances, EBS and EFS volumes, RDS and DynamoDB databases.
 
-Resource | Type of backup
----|---|
-EC2 Instance | AMI
-EBS Volume | Snapshot
-RDS Instance | Snapshot
+For a full list of supported resources please see here - https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html
 
-Any of the above resources which are have the tag - `is-production = true` will be backed up.
+Please note that some resources may need extra configuration and new services may require an additional opt in.  Please refer to the AWS documentation and if you have any questions please ask the [Modernisation Platform team](../../getting-help).
 
-## Backup Schedule
+## Production Backups
+
+### What is backed up?
+
+Resources which have the tag - `is-production = true` will be backed up.
+Resources which have the tag - `is-production = true` **and** the tag `backup = false` will **not** be backed up.
+
+### Backup schedule
 
 Backups are taken daily at 00:30.
 
-## Retention period
+### Retention period
 
-Backups are retained for 4 months.  After one month they will be transferred to cold storage.
+Backups are retained for 30 days.
+
+## Non production backups
+
+### What is backed up?
+
+Non production resources which have the tag - `backup = true` will be backed up.
+
+### Backup schedule
+
+Backups are taken daily at 00:30.
+
+### Retention period
+
+Backups are retained for 30 days.
+
+## Custom backup plans
+
+If the above built in backup plans are not suitable, you can create your own backup plans via code in the modernisation-platform-environments repository, however we will not be responsible for your lifecycle rules, backups can be costly if not removed.
+
+## On-Demand backups
+
+We had added, to the developer role, the ability to take on-demand backups of resources for those occasions where a one-off backup required.  This can be done via the AWS Backup console or via the AWS CLI. As with other backups, these can be costly if long rention periods are used.
+
+Note that when using this feature, the backup IAM role AWSBackup must be selected. 
 
 ## How to find your backups
 
 You can view your backups my navigating to AWS Backup in the AWS console and clicking "Backup vaults".
 
-You can also view backups via the normal methods for viewing snapshots and AMIs (eg. EC2, Elastic Block Store, Snapshots)
+You can also view backups via the normal methods for viewing snapshots and AMIs (eg. EC2, Elastic Block Store, Snapshots).

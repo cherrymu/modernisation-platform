@@ -5,7 +5,11 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "hmpps-interventions-dev",
+          "sso_group_name": "hmpps-interventions-dev",
+          "level": "sandbox"
+        },
+        {
+          "sso_group_name": "hmpps-interventions-dashboard-access",
           "level": "sandbox"
         }
       ]
@@ -14,6 +18,9 @@
   "tags": {
     "application": "refer-monitor",
     "business-unit": "HMPPS",
-    "owner": "tatiana.soaresdasilva@digital.justice.gov.uk"
-  }
+    "infrastructure-support": "interventions-devs@digital.justice.gov.uk",
+    "owner": "interventions-devs@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""]
 }

@@ -4,13 +4,13 @@ data "aws_caller_identity" "mod-platform" {
 
 data "aws_kms_alias" "environment_management" {
   provider = aws.modernisation-platform
-  name     = "alias/environment-management"
+  name     = "alias/environment-management-multi-region"
 }
 
 #S3 Bucket for Athena temp SQL queries 
 
 module "s3-bucket-athena" {
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=v6.2.0"
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=8688bc15a08fbf5a4f4eef9b7433c5a417df8df1" # v7.0.0
   providers = {
     aws.bucket-replication = aws.modernisation-platform-eu-west-1
   }
@@ -213,6 +213,7 @@ resource "aws_kms_alias" "athena_logging" {
 }
 data "aws_iam_policy_document" "athena_logging" {
   # checkov:skip=CKV_AWS_111: "policy is directly related to the resource"
+  # checkov:skip=CKV_AWS_356: "policy is directly related to the resource"
   # checkov:skip=CKV_AWS_109: "role is resticted by limited actions in member account"
 
   # -- AWS - Documentation reference --
@@ -266,8 +267,8 @@ resource "aws_lambda_function" "athena_table_update" {
   function_name                  = "athena_table_update"
   role                           = aws_iam_role.athena_lambda.arn
   handler                        = "index.lambda_handler"
-  source_code_hash               = data.archive_file.lambda_zip.output_path
-  runtime                        = "python3.8"
+  source_code_hash               = data.archive_file.lambda_zip.output_base64sha256
+  runtime                        = "python3.12"
   reserved_concurrent_executions = 1
   kms_key_arn                    = aws_kms_key.athena_logging.arn
   environment {

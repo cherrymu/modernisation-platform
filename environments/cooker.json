@@ -1,14 +1,42 @@
 {
-	"account-type": "member",
-	"environments": [
+  "account-type": "member",
+  "environments": [
     {
       "name": "development",
-      "access": []
+      "access": [
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "developer",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "instance-management",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "sandbox",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "tvm-purple-team",
+          "level": "sandbox",
+          "nuke": "rebuild"
+        }
+      ],
+      "additional_reviewers": ["astrobinson"],
+      "instance_scheduler_skip": ["true"]
     }
-	],
-	"tags": {
-		"application": "modernisation-platform",
-		"business-unit": "Platforms",
-		"owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk"
-	}
+  ],
+  "tags": {
+    "application": "modernisation-platform",
+    "business-unit": "Platforms",
+    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
+    "owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk",
+    "slack-channel": "modernisation-platform",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""],
+  "go-live-date": ""
 }

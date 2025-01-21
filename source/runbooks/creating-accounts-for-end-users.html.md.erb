@@ -1,0 +1,163 @@
+---
+owner_slack: "#modernisation-platform"
+title: Creating AWS Accounts for Teams
+last_reviewed_on: 2024-09-27
+review_in: 6 months
+---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
+
+# <%= current_page.data.title %>
+
+## Overview
+
+Here’s an example of an account request, and the steps that were taken in order to create it. There are links to pull requests and the stages they need to be opened and merged, as well as references and explanations as to why.
+
+## Information Required
+
+Customers will fill out the new-environment template via our public repository [here](https://github.com/ministryofjustice/modernisation-platform/issues/new/choose) and supply the required information.
+
+| Attribute                    | Description                                                                                                                                                                                                                                                                                     |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Application name (file name) | The name must be in lowercase and a maximum of 30 characters. For our example we have `data-and-insights-wepi`                                                                                                                                                                                  |
+| isolated-network             | If the user has requested an isolated network environment only complete the [New Environment Files](#new-environment-files) and stop when you reach the [Networking Stage](#networking-stage) as this is not required.                                                                          |
+| SSO Group Name               | This is the name of the Identity Center group used for SSO, which can be a GitHub team name that will be accessing the environment. Environments are accessed via single sign on (SSO), so to give people permissions to access your environment you just have to add them to your GitHub team. |
+| Access                       | For our example, sandbox access has been requested. To read more about access levels, click [here](https://user-guide.modernisation-platform.service.justice.gov.uk/user-guide/creating-environments.html#application-name)                                                                     |
+| Environment                  | This is one of the four valid environments, development, test, preproduction or production                                                                                                                                                                                                      |
+| Tags                         | application, business-unit and owner are in tags, and they are used to tag your AWS resources inside of your account.                                                                                                                                                                           |
+| Additional features          | This example has no additional features, but things VPN endpoints and extended DNS zones are requestable.                                                                                                                                                                                       |
+
+## New Environment Files
+
+#### 1. Create a new environment file
+
+`environments/$application-name.json`
+
+See an example file [here](https://user-guide.modernisation-platform.service.justice.gov.uk/user-guide/creating-environments.html#example-json-files).
+
+> Note - If you are adding an environment to an existing application you can add the new environment block to this file, you do not need to create another. Creating multiple environments in bulk is supported, but creating multiple application accounts is not.
+
+By default the codeowners for the application teams folder in the `modernisation-platform-environments` repository will be the GitHub teams defined in the access block.
+
+You can override this by defining `codeowners` as an attribute for that application.
+
+`"codeowners": ["<owner-name>"],` Replace \<owner-name\> with a GitHub team such as `modernisation-platform`.
+
+This will restrict code approval to only the SSO group names listed in the 'codeowners' attribute.
+
+See [#5957](https://github.com/ministryofjustice/modernisation-platform/pull/5957) for an example of the change required.
+
+By default all teams listed in the access blocks for an environment can approve the corresponding Github action runs.
+
+Alternatively, if you wish to specify the SSO group names that can approve the Github action runs for a specific environment, you can define `github_action_reviewer` as an attribute for that environment by setting `"github_action_reviewer" : "true"` in the access block for that environment/team.
+
+```json
+    "name": "development",
+      "access": [
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "developer",
+          "github_action_reviewer" : "true"
+        },
+        {
+          "sso_group_name": "some-other-team",
+          "level": "developer"
+        }
+      ]
+    },
+```
+
+In this example, only the `modernisation-platform` team can approve the Github action runs for the development environment.
+
+See [#6338](https://github.com/ministryofjustice/modernisation-platform/pull/6338) for an example of the change required.
+
+In a recent update to the JSON environment file we have added a new tag called critical-national-infastructure, this tag exists to help us report on 
+vital applications and infrastructure to the ministry of justice. This is a boolean input and the default is always false but if your application is critical then this should be set to true.
+
+See [#8191](https://github.com/ministryofjustice/modernisation-platform/commit/58c7fc263920cfbae45150546488815e8c57869e) for an example of the change required.
+
+#### 2. Update the `expected.rego`
+
+Update the [`policies/environments/expected.rego`](https://github.com/ministryofjustice/modernisation-platform/blob/main/policies/environments/expected.rego) file with the newly added application name.
+
+This is to make sure that none of the json files gets accidentally deleted. This is going to be validated with the [opa-policies](https://github.com/ministryofjustice/modernisation-platform/blob/main/.github/workflows/opa-policies.yml) GitHub Actions workflow.
+
+#### 3. Create a pull request for the changes made in steps 1 and 2
+
+This will trigger the [`new-environment workflow`](https://github.com/ministryofjustice/modernisation-platform/blob/main/.github/workflows/new-environment.yml), which will run its check-environments-deployment-plan. You can see what will change in the output from GitHub Actions.
+
+#### 4. Merge the pull request
+
+This will run the [`new-environment` workflow](https://github.com/ministryofjustice/modernisation-platform/blob/main/.github/workflows/new-environment.yml) to create a new AWS account.
+
+This will also run the [`new-environment-files` workflow](https://github.com/ministryofjustice/modernisation-platform/blob/main/.github/workflows/new-environment-files.yml) which generates two new pull requests if this is the first environment of the new application:
+
+If the environment is being created for an account type of member-unrestricted it will not create the PR in the modernisation-platform-environments repository and this step can be ignored.
+
+1. Creating application files in the `modernisation-platform` repo.
+1. Creating application files in the `modernisation-platform-environments` repo.
+
+> Note - These PRs are only created the first time an environment for an application is created, eg the first time you create a new application.json file. If you add to an existing environment the PRs will not be created.
+
+> The new-environment workflow may fail if the account alias is already in use. If this happens, add the environment name to the [skip-alias local](https://github.com/ministryofjustice/modernisation-platform/blob/main/terraform/environments/bootstrap/member-bootstrap/locals.tf#L57). Merging this PR will run the required jobs again.
+
+#### 5. Merge the pull request created in the modernisation-platform repo (step 4.1)
+
+#### 6. Merge the pull request created in the modernisation-platform-environments repo (step 4.2)
+
+> Note - The plan will fail on these PRs due to the networking not yet being complete. This is fine, the goal of these PRs is to create the necessary files, not make deployments.
+
+> Note - isolated network environment setup stops here and is completed.
+
+## Networking Stage
+
+This stage sets up [Resource Access Manager (RAM) sharing](https://docs.aws.amazon.com/ram/latest/userguide/what-is.html) to share the relevant business unit subnet sets to the application account.
+
+Business unit VPCs and subnet sets are already created for all the MoJ business units. If an additional VPC or subnet set is needed, see guidance [here.](https://user-guide.modernisation-platform.service.justice.gov.uk/runbooks/creating-vpcs.html).
+
+If the environment is being created for an account type of member-unrestricted this stage is not required and can be ignored.
+
+#### 1. Add the application to the relevant subnets
+
+Add the application to the subnet sets in [`environments-networks`](https://github.com/ministryofjustice/modernisation-platform/tree/main/environments-networks).
+
+Most applications will be added to the `general` subnet set. If they need something different see the above guidance on creating VPCs and subnet sets.
+
+#### 2. Update the OPA policies
+
+Update the [`policies/networking/expected.rego`](https://github.com/ministryofjustice/modernisation-platform/blob/main/policies/networking/expected.rego) file to include newly added environments. This is to ensure that none of the subnets get accidentally deleted. Here's an example of a pull request for this [stage](https://github.com/ministryofjustice/modernisation-platform/pull/2127/files).
+
+> Note remember to add the full environment names, eg `data-and-insights-wepi-development` not just the application name.
+
+#### 3. Create a pull request for the changes in step 1 and 2
+
+This will then kick off `core-vpc-<env>-deployment` pipelines and run `terraform plan`, `terraform apply` and the `scripts/member-account-ram-association.sh` script for the RAM share.
+
+This will run the RAM share successfully if you are adding environments for an existing application. If it is a new application the RAM share won't sucessfully run until the next step.
+
+The pipeline will also generate a PR for networking variables in both the modernisation-platform and modernisation-platform-environments repos. An example can be found [here](https://github.com/ministryofjustice/modernisation-platform/pull/2203)
+
+#### 4. Merge in the two generated PRs from step 3
+
+This will run the RAM share script again (it needs to run in the previous step as if adding an environment the networking files will already be there, it need to run in this step as this is the first time adding the networking files)
+
+> If the RAM share script fails to run on the merge for any reason, it will have to be run manually in the relevant application folder [here](https://github.com/ministryofjustice/modernisation-platform/tree/main/terraform/environments).
+
+## Checking its creation
+
+You should be able to see the account or accounts created [here](https://moj.awsapps.com/start/#/)
+
+Logging into the account, you should be able to view the subnets, and be displayed with
+
+![SSO main menu](../images/subnets.png)
+
+## Inform Customer
+
+When you close the ticket in GitHub, the requester will receive a notification informing them that the requested accounts have been successfully created.

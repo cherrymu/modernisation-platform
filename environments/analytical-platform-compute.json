@@ -1,0 +1,63 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "sandbox",
+          "nuke": "exclude"
+        },
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "data-engineer"
+        }
+      ],
+      "instance_scheduler_skip": ["true"]
+    },
+    {
+      "name": "test",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "quicksight-admin"
+        }
+      ],
+      "instance_scheduler_skip": ["true"]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "analytical-platform",
+          "level": "quicksight-admin"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "analytical-platform-compute",
+    "business-unit": "Platforms",
+    "infrastructure-support": "analytical-platform@digital.justice.gov.uk",
+    "owner": "Analytical Platform: analytical-platform@digital.justice.gov.uk"
+  },
+  "github-oidc-team-repositories": [""],
+  "go-live-date": ""
+}

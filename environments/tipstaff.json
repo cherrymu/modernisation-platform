@@ -1,0 +1,42 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "sandbox",
+          "nuke": "rebuild"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "developer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "tipstaff",
+    "business-unit": "HMCTS",
+    "infrastructure-support": "DTS-ITServiceDesk@justice.gov.uk",
+    "owner": "DTS-ITServiceDesk@justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": ["ministryofjustice/Tipstaff"],
+  "go-live-date": "2023-08-09"
+}

@@ -1,10 +1,8 @@
-package main
+package policies.collaborators
 
-has_field(object, field) {
-  object[field]
-  object[field] != ""
-}
+import rego.v1
 
-array_contains(array, element) {
-  array[_] = element
+has_field(obj, field) if {
+	obj[field]
+	obj[field] != ""
 }

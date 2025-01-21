@@ -5,8 +5,12 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "xhibit-portal-dev",
+          "sso_group_name": "xhibit-portal-dev",
           "level": "administrator"
+        },
+        {
+          "sso_group_name": "cjse-xhibit-portal-discovery",
+          "level": "developer"
         }
       ]
     },
@@ -14,7 +18,7 @@
       "name": "preproduction",
       "access": [
         {
-          "github_slug": "xhibit-portal-dev",
+          "sso_group_name": "xhibit-portal-dev",
           "level": "developer"
         }
       ]
@@ -23,7 +27,7 @@
       "name": "production",
       "access": [
         {
-          "github_slug": "xhibit-portal-dev",
+          "sso_group_name": "xhibit-portal-dev",
           "level": "developer"
         }
       ]
@@ -32,8 +36,10 @@
   "tags": {
     "application": "xhibit-portal",
     "business-unit": "HMCTS",
-    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
-    "owner": "george.cairns@digital.justice.gov.uk"
-  }
+    "infrastructure-support": "xpsupport@digital.justice.gov.uk",
+    "owner": "dom.tomkins@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""],
+  "go-live-date": "2022-03-25"
 }
-

@@ -1,27 +1,23 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Running Terraform Plan Locally
-last_reviewed_on: 2022-05-24
+last_reviewed_on: 2024-12-13
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
 Whilst it is possible to see the results of a Terraform plan when you [create a pull request](./deploying-your-infrastructure.html#jobs-on-pull-request), it is also possible to run a Terraform plan locally.
 Some engineers prefer this as it provides a quicker feedback loop to identify any issues with your infrastructure code.
-
-## Modify your providers.tf and platform_secrets.tf
-
-In the [modernisation-platform-environments repository](https://github.com/ministryofjustice/modernisation-platform-environments), in your application folder there are files called `providers.tf` and `platform_secrets.tf`
-
-These files detail the Terraform AWS providers used, which roles they use when running Terraform and details of the environments management secret.
-
-The top part of each file details the configuration which is needed to run the Terraform on the GitHub Actions CI/CD pipelines. The second section, which is by default commented out, details configuration required if running a plan locally.
-
-
-To run a plan locally, you need to comment out the top section of both the files, and uncomment the bottom section of the files.  Comments within the file show which sections.
-
->Note do not check in to GitHub any modifications to the file, as this will cause the pipeline to stop working, these changes are only for running Terraform plans locally.
 
 ## Enter your AWS SSO credentials
 
@@ -33,12 +29,27 @@ Get your AWS SSO credentials as detailed [here](./getting-aws-credentials.html),
 
 Follow the instructions [here](https://learn.hashicorp.com/tutorials/terraform/install-cli) to install the latest version of Terraform according to your platform.
 
+## Retrieve the Modernisation Platform account ID
+
+You will need the Modernisation Platform account ID to assume the correct role when running `terraform init`.
+You can retrieve the Modernisation Platform account ID from the SSM Parameter store via the web console, or via CLI.
+This will allow you to assume the correct `role_arn`.
+
+```
+aws ssm get-parameters --region eu-west-2 \
+--names "modernisation_platform_account_id" --with-decryption --query "Parameters[*].{Value:Value}" --output text
+```
+
 ## Run Terraform plan
 
 1. Navigate to your application infrastructure code - `cd modernisation-platform-environments/terraform/environments/my-application`
-1. Run a Terraform init - `terraform init`
-1. View the workspaces (you have different workspaces for your different environment accounts) - `terraform workspace list`
-1. Select the required workspace - `terraform workspace select my-application-development`
-1. Run a Terraform plan - `terraform plan`
+2. Run a Terraform init that assumes the backend role in the **Modernisation Platform** account - `terraform init -backend-config=assume_role={role_arn=\"arn:aws:iam::000000000000:role/modernisation-account-terraform-state-member-access\"}`
 
->Running a plan locally has read only permissions, you will not be able to run an apply.
+> Remember to replace the `000000000000` placeholder with the Modernisation Platform account ID.
+
+3. View the workspaces (you have different workspaces for your different environment accounts) - `terraform workspace list`
+4. Select the required workspace - `terraform workspace select my-application-development`
+5. Run a Terraform plan - `terraform plan`
+
+>Running a plan locally has read only permissions, you will not be able to run an apply, destroy or import.
+>The example syntax for assuming a backend role is appropriate for Terraform `1.6.0` onwards.

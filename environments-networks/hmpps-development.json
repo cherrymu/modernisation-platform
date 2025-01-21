@@ -4,14 +4,27 @@
       "general": {
         "cidr": "10.26.24.0/21",
         "accounts": [
-          "performance-hub-development",
+          "corporate-staff-rostering-development",
+          "delius-alfresco-development",
+          "delius-core-development",
+          "delius-iaps-development",
+          "delius-jitbit-development",
+          "delius-mis-development",
+          "delius-nextcloud-development",
           "digital-prison-reporting-development",
+          "electronic-monitoring-data-development",
           "equip-development",
-          "ppud-development",
-          "refer-monitor-development",
+          "hmpps-domain-services-development",
+          "hmpps-oem-development",
+          "nomis-combined-reporting-development",
+          "nomis-data-hub-development",
           "nomis-development",
           "oasys-development",
-          "delius-iaps-development"
+          "oasys-national-reporting-development",
+          "performance-hub-development",
+          "planetfm-development",
+          "ppud-development",
+          "refer-monitor-development"
         ]
       }
     }
@@ -19,7 +32,17 @@
   "options": {
     "bastion_linux": true,
     "additional_cidrs": [],
-    "additional_endpoints": ["com.amazonaws.eu-west-2.email-smtp"],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.athena",
+      "com.amazonaws.eu-west-2.email-smtp",
+      "com.amazonaws.eu-west-2.execute-api",
+      "com.amazonaws.eu-west-2.glue",
+      "com.amazonaws.eu-west-2.kinesis-streams",
+      "com.amazonaws.eu-west-2.secretsmanager",
+      "com.amazonaws.eu-west-2.transfer.server",
+      "com.amazonaws.eu-west-2.appstream.streaming"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

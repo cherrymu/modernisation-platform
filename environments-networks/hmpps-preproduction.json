@@ -3,14 +3,41 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.27.0.0/21",
-        "accounts": ["performance-hub-preproduction", "nomis-preproduction", "oasys-preproduction"]
+        "accounts": [
+          "corporate-staff-rostering-preproduction",
+          "delius-alfresco-preproduction",
+          "delius-core-preproduction",
+          "delius-iaps-preproduction",
+          "delius-jitbit-preproduction",
+          "delius-mis-preproduction",
+          "delius-nextcloud-preproduction",
+          "digital-prison-reporting-preproduction",
+          "electronic-monitoring-data-preproduction",
+          "hmpps-domain-services-preproduction",
+          "hmpps-oem-preproduction",
+          "nomis-preproduction",
+          "nomis-combined-reporting-preproduction",
+          "nomis-data-hub-preproduction",
+          "oasys-preproduction",
+          "oasys-national-reporting-preproduction",
+          "performance-hub-preproduction",
+          "planetfm-preproduction",
+          "ppud-preproduction"
+        ]
       }
     }
   },
   "options": {
     "bastion_linux": true,
     "additional_cidrs": [],
-    "additional_endpoints": [],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.email-smtp",
+      "com.amazonaws.eu-west-2.execute-api",
+      "com.amazonaws.eu-west-2.kinesis-streams",
+      "com.amazonaws.eu-west-2.secretsmanager",
+      "com.amazonaws.eu-west-2.transfer.server"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

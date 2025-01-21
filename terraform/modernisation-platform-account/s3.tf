@@ -1,21 +1,38 @@
-# State bucket KMS Source
-resource "aws_kms_key" "s3_state_bucket" {
-  description             = "s3-state-bucket"
+# State bucket KMS multi-Region
+resource "aws_kms_key" "s3_state_bucket_multi_region" {
+  description             = "s3-state-bucket-multi-region"
   policy                  = data.aws_iam_policy_document.kms_state_bucket.json
   enable_key_rotation     = true
   deletion_window_in_days = 30
+  multi_region            = true
+}
+
+resource "aws_kms_alias" "s3_state_bucket_multi_region" {
+  name          = "alias/s3-state-bucket-multi-region"
+  target_key_id = aws_kms_key.s3_state_bucket_multi_region.id
 }
 
 resource "aws_kms_alias" "s3_state_bucket" {
   name          = "alias/s3-state-bucket"
-  target_key_id = aws_kms_key.s3_state_bucket.id
+  target_key_id = aws_kms_key.s3_state_bucket_multi_region.id
+}
+
+resource "aws_kms_replica_key" "s3_state_bucket_multi_region_replica" {
+  description             = "AWS S3 bucket replica key"
+  deletion_window_in_days = 30
+  primary_key_arn         = aws_kms_key.s3_state_bucket_multi_region.arn
+  provider                = aws.modernisation-platform-eu-west-1
+}
+
+resource "aws_kms_alias" "s3_state_bucket_multi_region_replica" {
+  name          = "alias/s3-state-bucket-multi-region-replica"
+  target_key_id = aws_kms_replica_key.s3_state_bucket_multi_region_replica.id
 }
 
 data "aws_iam_policy_document" "kms_state_bucket" {
-
   # checkov:skip=CKV_AWS_111: "policy is directly related to the resource"
+  # checkov:skip=CKV_AWS_356: "policy is directly related to the resource"
   # checkov:skip=CKV_AWS_109: "role is resticted by limited actions in member account"
-
   statement {
     sid    = "Allow management access of the key to the modernisation platform account"
     effect = "Allow"
@@ -68,7 +85,6 @@ data "aws_iam_policy_document" "kms_state_bucket" {
   }
 }
 
-
 # State bucket KMS Destination
 resource "aws_kms_key" "s3_state_bucket_eu-west-1_replication" {
   provider = aws.modernisation-platform-eu-west-1
@@ -78,6 +94,7 @@ resource "aws_kms_key" "s3_state_bucket_eu-west-1_replication" {
   enable_key_rotation     = true
   deletion_window_in_days = 30
 }
+
 resource "aws_kms_alias" "s3_state_bucket_eu-west-1_replication" {
   provider = aws.modernisation-platform-eu-west-1
 
@@ -85,27 +102,20 @@ resource "aws_kms_alias" "s3_state_bucket_eu-west-1_replication" {
   target_key_id = aws_kms_key.s3_state_bucket_eu-west-1_replication.id
 }
 
-module "state-bucket-s3-replication-role" {
-  source             = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket-replication-role?ref=v3.0.0"
-  buckets            = [module.state-bucket.bucket.arn]
-  replication_bucket = "modernisation-platform-terraform-state-replication"
-  suffix_name        = "-terraform-state"
-  tags               = local.tags
-}
-
 module "state-bucket" {
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=v6.2.0"
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=cadab519b10a7d28dfa3b77d407725db6b37614a" # v8.0.0
 
   providers = {
     aws.bucket-replication = aws.modernisation-platform-eu-west-1
   }
   bucket_policy              = [data.aws_iam_policy_document.allow-state-access-from-root-account.json]
   bucket_name                = "modernisation-platform-terraform-state"
-  replication_role_arn       = module.state-bucket-s3-replication-role.role.arn
+  replication_bucket         = "modernisation-platform-terraform-state-replication"
+  suffix_name                = "-terraform-state"
   replication_enabled        = true
   replication_region         = "eu-west-1"
-  custom_kms_key             = aws_kms_key.s3_state_bucket.arn
-  custom_replication_kms_key = aws_kms_key.s3_state_bucket_eu-west-1_replication.arn
+  custom_kms_key             = aws_kms_key.s3_state_bucket_multi_region.arn
+  custom_replication_kms_key = aws_kms_replica_key.s3_state_bucket_multi_region_replica.arn
   tags                       = local.tags
 
   lifecycle_rule = [
@@ -118,7 +128,7 @@ module "state-bucket" {
           days          = 90
           storage_class = "STANDARD_IA"
           }, {
-          days          = 365
+          days          = 700
           storage_class = "GLACIER"
         }
       ]
@@ -130,7 +140,7 @@ module "state-bucket" {
           days          = 90
           storage_class = "STANDARD_IA"
           }, {
-          days          = 365
+          days          = 700
           storage_class = "GLACIER"
         }
       ]
@@ -158,11 +168,9 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
   }
 
   statement {
-    sid    = "AllowModifyObjectsFromRootAccount"
-    effect = "Allow"
-    actions = [
-      "s3:GetObject"
-    ]
+    sid       = "AllowGetObjectsFromRootAccount"
+    effect    = "Allow"
+    actions   = ["s3:GetObject"]
     resources = ["${module.state-bucket.bucket.arn}/*"]
 
     principals {
@@ -172,6 +180,7 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
   }
 
   statement {
+    sid       = "AllowPutObjectsFromRootAccounts"
     effect    = "Allow"
     actions   = ["s3:PutObject"]
     resources = ["${module.state-bucket.bucket.arn}/*"]
@@ -187,15 +196,29 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
       values   = ["bucket-owner-full-control"]
     }
   }
+
   statement {
-    sid    = "ReadOnlyFromModernisationPlatformOU"
-    effect = "Allow"
-    actions = [
-      "s3:GetObject",
-      "s3:ListBucket"
-    ]
+    sid       = "ListBucketFromModernisationPlatformOU"
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = [module.state-bucket.bucket.arn]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "aws:PrincipalOrgPaths"
+      values   = ["${data.aws_organizations_organization.root_account.id}/*/${local.environment_management.modernisation_platform_organisation_unit_id}/*"]
+    }
+  }
+
+  statement {
+    sid     = "GetObjectFromModernisationPlatformOU"
+    effect  = "Allow"
+    actions = ["s3:GetObject"]
     resources = [
-      module.state-bucket.bucket.arn,
       "${module.state-bucket.bucket.arn}/terraform.tfstate",
       "${module.state-bucket.bucket.arn}/environments/members/*",
       "${module.state-bucket.bucket.arn}/environments/accounts/core-network-services/*"
@@ -211,6 +234,7 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
       values   = ["${data.aws_organizations_organization.root_account.id}/*/${local.environment_management.modernisation_platform_organisation_unit_id}/*"]
     }
   }
+
   statement {
     sid     = "AllowTestingCIUser"
     effect  = "Allow"
@@ -247,8 +271,133 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
     condition {
       test     = "ForAnyValue:StringLike"
       variable = "aws:PrincipalArn"
-      values = [
-      "arn:aws:iam::*:role/github-actions"]
+      values   = ["arn:aws:iam::*:role/github-actions"]
+    }
+  }
+
+  statement {
+    sid       = "AllowAdministratorAccessRole"
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.state-bucket.bucket.arn}/environments/members/*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "aws:PrincipalOrgPaths"
+      values   = ["${data.aws_organizations_organization.root_account.id}/*/${local.environment_management.modernisation_platform_organisation_unit_id}/*"]
+    }
+
+    condition {
+      test     = "ForAnyValue:StringLike"
+      variable = "aws:PrincipalArn"
+      values   = ["arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_AdministratorAccess_*"]
+    }
+  }
+
+  statement {
+    sid       = "AllowMPAdministratorAccessRole"
+    effect    = "Allow"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.state-bucket.bucket.arn}/environments/accounts/*", ]
+
+    principals {
+      type        = "AWS"
+      identifiers = tolist(data.aws_iam_roles.sso-admin-access.arns)
+    }
+  }
+
+  statement {
+    sid    = "AllowSprinklerGithubActionRole"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetObject"
+    ]
+    resources = [
+      "arn:aws:s3:::modernisation-platform-terraform-state/single-sign-on/terraform.tfstate",
+      "arn:aws:s3:::modernisation-platform-terraform-state/environments/bootstrap/*/sprinkler-development/terraform.tfstate"
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.environment_management.account_ids["sprinkler-development"]}:role/github-actions"]
+    }
+  }
+}
+
+module "cost-management-bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=cadab519b10a7d28dfa3b77d407725db6b37614a" # v8.0.0
+  providers = {
+    aws.bucket-replication = aws.modernisation-platform-eu-west-1
+  }
+  bucket_policy       = [data.aws_iam_policy_document.cost_management_bucket_policy.json]
+  bucket_name         = "mp-cost-explorer-reports"
+  custom_kms_key      = aws_kms_key.s3_state_bucket_multi_region.arn
+  replication_enabled = false
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Disabled"
+    }
+  ]
+  tags = local.tags
+}
+
+
+data "aws_iam_policy_document" "cost_management_bucket_policy" {
+  statement {
+    sid    = "AllowAdministratorAccessRole"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject"
+    ]
+    resources = ["${module.cost-management-bucket.bucket.arn}/*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.environment_management.modernisation_platform_account_id}:role/github-actions"]
+    }
+  }
+}
+
+module "member_information_bucket" {
+  source = "github.com/ministryofjustice/modernisation-platform-terraform-s3-bucket?ref=cadab519b10a7d28dfa3b77d407725db6b37614a" # v8.0.0
+  providers = {
+    aws.bucket-replication = aws.modernisation-platform-eu-west-1
+  }
+  bucket_policy       = [data.aws_iam_policy_document.member_information_bucket_policy.json]
+  bucket_name         = "modernisation-member-information"
+  custom_kms_key      = aws_kms_key.s3_state_bucket_multi_region.arn
+  replication_enabled = false
+  lifecycle_rule = [
+    {
+      id      = "main"
+      enabled = "Disabled"
+    }
+  ]
+  tags = local.tags
+}
+
+
+data "aws_iam_policy_document" "member_information_bucket_policy" {
+  statement {
+    sid    = "AllowAdministratorAccessRole"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject"
+    ]
+    resources = ["${module.member_information_bucket.bucket.arn}/*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.environment_management.modernisation_platform_account_id}:role/github-actions"]
     }
   }
 }

@@ -3,14 +3,44 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.27.8.0/21",
-        "accounts": ["performance-hub-production", "ppud-production", "equip-production", "nomis-production", "oasys-production"]
+        "accounts": [
+          "corporate-staff-rostering-production",
+          "delius-alfresco-production",
+          "delius-core-production",
+          "delius-iaps-production",
+          "delius-jitbit-production",
+          "delius-mis-production",
+          "delius-nextcloud-production",
+          "digital-prison-reporting-production",
+          "electronic-monitoring-data-production",
+          "equip-production",
+          "hmpps-domain-services-production",
+          "hmpps-oem-production",
+          "nomis-combined-reporting-production",
+          "nomis-data-hub-production",
+          "nomis-production",
+          "oasys-national-reporting-production",
+          "oasys-production",
+          "performance-hub-production",
+          "planetfm-production",
+          "ppud-production"
+        ]
       }
     }
   },
   "options": {
     "bastion_linux": false,
     "additional_cidrs": [],
-    "additional_endpoints": ["com.amazonaws.eu-west-2.email-smtp"],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.athena",
+      "com.amazonaws.eu-west-2.email-smtp",
+      "com.amazonaws.eu-west-2.execute-api",
+      "com.amazonaws.eu-west-2.glue",
+      "com.amazonaws.eu-west-2.kinesis-streams",
+      "com.amazonaws.eu-west-2.secretsmanager",
+      "com.amazonaws.eu-west-2.transfer.server"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

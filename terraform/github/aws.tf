@@ -8,39 +8,11 @@ data "aws_secretsmanager_secret_version" "environment_management" {
   secret_id = data.aws_secretsmanager_secret.environment_management.id
 }
 
-
-# This gets the AWS access keys for Core CI/CD from AWS Secrets Manager to set as repository secrets.
-data "aws_secretsmanager_secret" "ci_iam_user_keys" {
-  name = "ci_iam_user_keys"
-}
-
-data "aws_secretsmanager_secret_version" "ci_iam_user_keys" {
-  secret_id = data.aws_secretsmanager_secret.ci_iam_user_keys.id
-}
-
-# This gets the AWS access keys for Member CI/CD from AWS Secrets Manager to set as repository secrets.
-data "aws_secretsmanager_secret" "member_ci_iam_user_keys" {
-  name = "member_ci_iam_user_keys"
-}
-
-data "aws_secretsmanager_secret_version" "member_ci_iam_user_keys" {
-  secret_id = data.aws_secretsmanager_secret.member_ci_iam_user_keys.id
-}
-
-# This gets the AWS access keys for Testing CI/CD from AWS Secrets Manager to set as repository secrets.
-data "aws_secretsmanager_secret" "testing_ci_iam_user_keys" {
-  provider = aws.testing-test
-  name     = "testing_ci_iam_user_keys"
-}
-
-data "aws_secretsmanager_secret_version" "testing_ci_iam_user_keys" {
-  provider  = aws.testing-test
-  secret_id = data.aws_secretsmanager_secret.testing_ci_iam_user_keys.id
-}
 locals {
-  ci_iam_user_keys         = jsondecode(data.aws_secretsmanager_secret_version.ci_iam_user_keys.secret_string)
-  member_ci_iam_user_keys  = jsondecode(data.aws_secretsmanager_secret_version.member_ci_iam_user_keys.secret_string)
-  testing_ci_iam_user_keys = jsondecode(data.aws_secretsmanager_secret_version.testing_ci_iam_user_keys.secret_string)
+  testing_ci_iam_user_keys = sensitive({
+    AWS_ACCESS_KEY_ID     = aws_iam_access_key.testing_ci.id
+    AWS_SECRET_ACCESS_KEY = aws_iam_access_key.testing_ci.secret
+  })
 }
 
 # Get the slack webhook url
@@ -59,4 +31,42 @@ data "aws_secretsmanager_secret" "pagerduty_token" {
 
 data "aws_secretsmanager_secret_version" "pagerduty_token" {
   secret_id = data.aws_secretsmanager_secret.pagerduty_token.id
+}
+
+# Get the pagerduty user api token
+data "aws_secretsmanager_secret" "pagerduty_user_token" {
+  name = "pagerduty_userapi_token"
+}
+
+data "aws_secretsmanager_secret_version" "pagerduty_user_token" {
+  secret_id = data.aws_secretsmanager_secret.pagerduty_user_token.id
+}
+
+
+# Get the GitHub CI user PAT
+data "aws_secretsmanager_secret" "github_ci_user_token" {
+  name = "github_ci_user_pat"
+}
+
+data "aws_secretsmanager_secret_version" "github_ci_user_token" {
+  secret_id = data.aws_secretsmanager_secret.github_ci_user_token.id
+}
+
+# Get the GitHub CI user environments repo PAT
+data "aws_secretsmanager_secret" "github_ci_user_environments_repo_pat_token" {
+  name = "github_ci_user_environments_repo_pat"
+}
+
+data "aws_secretsmanager_secret_version" "github_ci_user_environments_repo_pat_token" {
+  secret_id = data.aws_secretsmanager_secret.github_ci_user_environments_repo_pat_token.id
+}
+
+# Get secret by name for modernisation_pat_multirepo
+data "aws_secretsmanager_secret" "modernisation_pat_multirepo" {
+  name = "modernisation_pat_multirepo"
+}
+
+# Get latest secret value with ID from above. This secret stores account IDs for the Modernisation Platform sub-accounts
+data "aws_secretsmanager_secret_version" "modernisation_pat_multirepo" {
+  secret_id = data.aws_secretsmanager_secret.modernisation_pat_multirepo.id
 }

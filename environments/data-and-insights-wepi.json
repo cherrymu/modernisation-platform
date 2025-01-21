@@ -5,8 +5,27 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "data-and-insights-hub",
-          "level": "sandbox"
+          "sso_group_name": "data-and-insights-hub",
+          "level": "sandbox",
+          "nuke": "exclude"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "data-and-insights-hub",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "data-and-insights-hub",
+          "level": "developer"
         }
       ]
     }
@@ -14,6 +33,9 @@
   "tags": {
     "application": "data-and-insights-wepi",
     "business-unit": "HQ",
-    "owner": "Philip.cooke@justice.gov.uk"
-  }
+    "infrastructure-support": "william.rose@justice.gov.uk",
+    "owner": "william.rose@justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""]
 }

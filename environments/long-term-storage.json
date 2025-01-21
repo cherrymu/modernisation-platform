@@ -1,0 +1,22 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "modernisation-platform-long-term-storage",
+          "level": "developer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "long-term-storage",
+    "business-unit": "Platforms",
+    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
+    "owner": "hosting-leads@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""]
+}

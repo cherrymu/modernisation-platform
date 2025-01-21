@@ -1,9 +1,18 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Testing Strategy
-last_reviewed_on: 2022-06-14
+last_reviewed_on: 2024-12-20
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
@@ -17,14 +26,20 @@ This strategy is currently focussed on core platform testing, however members ma
 
 ## Testing tools
 
-We use [Terratest](https://terratest.gruntwork.io/) for testing Terraform code, and [Open Policy Agent (OPA)](https://www.openpolicyagent.org/) for JSON structures.
+We use [Terratest](https://terratest.gruntwork.io/) for testing Terraform code, as well as native [Terraform test](https://www.hashicorp.com/blog/terraform-1-6-adds-a-test-framework-for-enhanced-code-validation) since version 1.6, and [Open Policy Agent (OPA)](https://www.openpolicyagent.org/) for JSON structures.
 All other tests should be written in Go and should use the standard Go [testing library](https://pkg.go.dev/testing).
 
 ## Testing environments
 
 The AWS account testing-test should be used to run Terratest code into.  This account is empty but configured the same as a member account.
 
-Copy the unit test folder from another modules Terratest to get the inital code which sets the backend, providers etc.
+When creating a new repo with the `module` type, empty unit tests and workflow will be present to complete.
+
+Run tests locally using the testing-test account Admin SSO credentials.
+
+Tests running in GitHub actions use the `testing-ci` user.
+
+To minimise securty risks around using static credentials, aws keys for `testing-ci` user are automatically rotated every 7 days.
 
 ## Testing areas
 

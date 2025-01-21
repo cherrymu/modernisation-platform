@@ -3,12 +3,23 @@
   "environments": [
     {
       "name": "production",
-      "access": []
+      "access": [
+        {
+          "sso_group_name": "analytical-platform-management-production-administrator",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "data-platform-audit-and-security",
+          "level": "security-audit"
+        }
+      ]
     }
   ],
   "tags": {
     "application": "analytical-platform-management",
     "business-unit": "Platforms",
+    "infrastructure-support": "analytical_platform@digital.justice.gov.uk",
     "owner": "Analytical Platform: analytical_platform@digital.justice.gov.uk"
-  }
+  },
+  "github-oidc-team-repositories": [""]
 }

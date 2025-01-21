@@ -5,8 +5,37 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "analytical-platform",
+          "sso_group_name": "analytical-platform-data-development-administrator",
           "level": "administrator"
+        },
+        {
+          "sso_group_name": "analytical-platform-data-development-data-engineer",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "data-platform-audit-and-security",
+          "level": "security-audit"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform-data-production-administrator",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "analytical-platform-data-production-data-engineer",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "data-platform-apps-and-tools-powerbi-authors",
+          "level": "powerbi-user"
+        },
+        {
+          "sso_group_name": "data-platform-audit-and-security",
+          "level": "security-audit"
         }
       ]
     }
@@ -14,6 +43,8 @@
   "tags": {
     "application": "analytical-platform-data",
     "business-unit": "Platforms",
+    "infrastructure-support": "analytical_platform@digital.justice.gov.uk",
     "owner": "Analytical Platform: analytical_platform@digital.justice.gov.uk"
-  }
+  },
+  "github-oidc-team-repositories": [""]
 }

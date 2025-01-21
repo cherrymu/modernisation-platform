@@ -57,18 +57,34 @@ resource "aws_cloudwatch_log_group" "external_inspection" {
 }
 
 resource "aws_flow_log" "external_inspection" {
-  iam_role_arn             = data.aws_iam_role.vpc-flow-log.arn
+  iam_role_arn             = aws_iam_role.vpc_flow_log.arn
   log_destination          = aws_cloudwatch_log_group.external_inspection.arn
+  log_format               = local.custom_vpc_flow_log_format
   traffic_type             = "ALL"
   log_destination_type     = "cloud-watch-logs"
   max_aggregation_interval = "60"
   vpc_id                   = aws_vpc.external_inspection.id
-  log_format               = "$${version} $${account-id} $${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${action} $${pkt-srcaddr} $${pkt-dstaddr} $${flow-direction} $${traffic-path}"
 
   tags = merge(
     local.tags,
     {
       Name = "external-inspection-flow-logs"
+    }
+  )
+}
+
+resource "aws_flow_log" "external_inspection_s3" {
+  log_destination          = local.core_logging_bucket_arns["vpc-flow-logs"]
+  log_destination_type     = "s3"
+  log_format               = local.custom_vpc_flow_log_format
+  max_aggregation_interval = "60"
+  traffic_type             = "ALL"
+  vpc_id                   = aws_vpc.external_inspection.id
+
+  tags = merge(
+    local.tags,
+    {
+      Name = "external-inspection-vpc-flow-logs-s3"
     }
   )
 }
@@ -110,6 +126,7 @@ resource "aws_subnet" "external_inspection_out" {
 #################################
 # Ingress Inspection VPC Routing
 #################################
+
 resource "aws_route_table" "external_inspection_in" {
   for_each = local.external_inspection_in_subnets_map
 
@@ -127,6 +144,7 @@ resource "aws_route_table" "external_inspection_in" {
     }
   )
 }
+
 resource "aws_route_table_association" "external_inspection_in" {
   for_each = local.external_inspection_in_subnets_map
 
@@ -149,6 +167,7 @@ resource "aws_route_table" "external_inspection_out" {
     }
   )
 }
+
 resource "aws_route_table_association" "external_inspection_out" {
   for_each = local.external_inspection_in_subnets_map
 
@@ -156,317 +175,46 @@ resource "aws_route_table_association" "external_inspection_out" {
   subnet_id      = aws_subnet.external_inspection_out[each.key].id
 }
 
-##############################
-# 
-##############################
-
-resource "aws_networkfirewall_firewall_policy" "external_inspection" {
-  name = "external"
-
-  firewall_policy {
-    stateless_default_actions          = ["aws:drop"]
-    stateless_fragment_default_actions = ["aws:drop"]
-    stateless_rule_group_reference {
-      priority     = 101
-      resource_arn = aws_networkfirewall_rule_group.stateless_rules.arn
-    }
-  }
+module "firewall_policy" {
+  source                 = "../../modules/firewall-policy"
+  fw_rulegroup_capacity  = "10000"
+  fw_kms_arn             = data.aws_kms_key.general_shared.arn
+  fw_policy_name         = format("%s-fw-policy", local.application_name)
+  fw_rulegroup_name      = format("%s-fw-rulegroup", local.application_name)
+  fw_fqdn_rulegroup_name = format("%s-fw-fqdn-rulegroup", local.application_name)
+  fw_allowed_domains     = local.fqdn_firewall_rules.fw_allowed_domains
+  fw_home_net_ips        = local.fqdn_firewall_rules.fw_home_net_ips
+  ip_sets                = local.firewall_sets["IP_SETS"]
+  port_sets              = local.firewall_sets["PORT_SETS"]
+  rules                  = local.firewall_rules
+  tags                   = local.tags
 }
 
-resource "aws_networkfirewall_rule_group" "stateless_rules" {
-  description = "Stateless Rules"
-  capacity    = 100
-  name        = "stateless-rules"
-  type        = "STATELESS"
-  rule_group {
-    rules_source {
-      stateless_rules_and_custom_actions {
-        stateless_rule {
-          priority = 100
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.184.0.0/16" # Global Protect
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.26.8.0/21" # Nomis-Test
-              }
-              destination_port {
-                from_port = 80
-                to_port   = 80
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule {
-          priority = 101
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.184.0.0/16" # Global Protect
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.26.8.0/21" # Nomis-Test
-              }
-              destination_port {
-                from_port = 443
-                to_port   = 443
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # Azure NOMIS test to MP Nomis database
-          priority = 200
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.101.0.0/16" # Azure NOMIS Test
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.26.8.0/21" # Nomis-Test
-              }
-              destination_port {
-                from_port = 1521
-                to_port   = 1521
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # Azure NOMIS test to MP Nomis database (return traffic)
-          priority = 210
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.101.0.0/16" # Azure NOMIS Test
-              }
-              source_port {
-                from_port = 1521
-                to_port   = 1521
-              }
-              destination {
-                address_definition = "10.26.8.0/21" # Nomis-Test
-              }
-              destination_port {
-
-                from_port = 1024
-                to_port   = 65535
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # Cloud Platform to MP Nomis database
-          priority = 300
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "172.20.0.0/16" # Cloud Platform
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.26.8.0/21" # Nomis-Test
-              }
-              destination_port {
-                from_port = 1521
-                to_port   = 1521
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule {
-          priority = 410
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.40.0.0/18" # Global Protect
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.27.8.0/21" # Nomis-Production
-              }
-              destination_port {
-                from_port = 80
-                to_port   = 80
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule {
-          priority = 411
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.40.0.0/18" # Global Protect
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.27.8.0/21" # Nomis-Production
-              }
-              destination_port {
-                from_port = 443
-                to_port   = 443
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # Azure NOMIS Production to MP Nomis database
-          priority = 250
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.40.0.0/18" # Azure NOMIS Production ?
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.27.8.0/21" # Nomis-Production
-              }
-              destination_port {
-                from_port = 1521
-                to_port   = 1521
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # Azure NOMIS Production to MP Nomis database (return traffic)
-          priority = 251
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "10.40.0.0/18" # Azure NOMIS Production ?
-              }
-              source_port {
-                from_port = 1521
-                to_port   = 1521
-              }
-              destination {
-                address_definition = "10.27.8.0/21" # Nomis-Production
-              }
-              destination_port {
-
-                from_port = 1024
-                to_port   = 65535
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # Cloud Platform to MP Nomis database
-          priority = 350
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "172.20.0.0/16" # Cloud Platform
-              }
-              source_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              destination {
-                address_definition = "10.27.8.0/21" # Nomis-Production
-              }
-              destination_port {
-                from_port = 1521
-                to_port   = 1521
-              }
-              protocols = [6]
-            }
-          }
-        }
-        stateless_rule { # PSN PPUD to MP HMPPS
-          priority = 400
-          rule_definition {
-            actions = ["aws:pass"]
-            match_attributes {
-              source {
-                address_definition = "51.247.2.115/32" # PSN PPUD
-              }
-              source_port {
-                from_port = 443
-                to_port   = 443
-              }
-              destination {
-                address_definition = "10.27.8.0/21" # HMPPS Production
-              }
-              destination_port {
-                from_port = 1024
-                to_port   = 65535
-              }
-              protocols = [6]
-            }
-          }
-        }
-      }
-    }
-  }
+module "firewall_logging" {
+  source                    = "../../modules/firewall-logging"
+  cloudwatch_log_group_name = format("fw-%s-logs", aws_networkfirewall_firewall.external_inspection.name)
+  fw_arn                    = aws_networkfirewall_firewall.external_inspection.arn
+  tags                      = local.tags
 }
-
 
 resource "aws_networkfirewall_firewall" "external_inspection" {
-  depends_on = [
-    aws_subnet.external_inspection_out
-  ]
-
+  # checkov:skip=CKV2_AWS_63: Firewall logging is defined in module see call above
+  depends_on          = [aws_subnet.external_inspection_out]
   name                = "external-inspection"
-  firewall_policy_arn = aws_networkfirewall_firewall_policy.external_inspection.arn
+  firewall_policy_arn = module.firewall_policy.fw_policy_arn
   vpc_id              = aws_vpc.external_inspection.id
-  subnet_mapping {
-    subnet_id = aws_subnet.external_inspection_out["eu-west-2a"].id
+  delete_protection   = true
+  encryption_configuration {
+    type   = "CUSTOMER_KMS"
+    key_id = data.aws_kms_key.general_shared.arn
   }
-  subnet_mapping {
-    subnet_id = aws_subnet.external_inspection_out["eu-west-2b"].id
-  }
-  subnet_mapping {
-    subnet_id = aws_subnet.external_inspection_out["eu-west-2c"].id
-  }
-
+  subnet_mapping { subnet_id = aws_subnet.external_inspection_out["eu-west-2a"].id }
+  subnet_mapping { subnet_id = aws_subnet.external_inspection_out["eu-west-2b"].id }
+  subnet_mapping { subnet_id = aws_subnet.external_inspection_out["eu-west-2c"].id }
   tags = merge(
     local.tags,
-    {
-      Name = "external-inspection"
-    }
+    { Name = "external-inspection" }
   )
-
 }
 
 #################################
@@ -477,7 +225,6 @@ resource "aws_networkfirewall_firewall" "external_inspection" {
 resource "aws_ec2_transit_gateway_vpc_attachment" "external_inspection_in" {
 
   transit_gateway_id = aws_ec2_transit_gateway.transit-gateway.id
-
 
   # Attach subnets to the Transit Gateway
   vpc_id = aws_vpc.external_inspection.id
@@ -494,6 +241,9 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "external_inspection_in" {
 
   # Turn off IPv6 support
   ipv6_support = "disable"
+
+  # Enable appliance mode support
+  appliance_mode_support = "enable"
 
   tags = merge(
     local.tags,

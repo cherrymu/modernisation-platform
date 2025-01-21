@@ -1,0 +1,31 @@
+{
+  "fw_allowed_domains": [
+    ".amazontrust.com",
+    ".c2r.ts.cdn.office.net",
+    ".digicert.com",
+    ".docker.com",
+    ".docker.io",
+    ".download.windowsupdate.com",
+    ".ghcr.io",
+    ".pki.goog",
+    ".servicebus.windows.net",
+    ".ubuntu.com",
+    ".update.microsoft.com",
+    ".windowsupdate.com",
+    ".windowsupdate.microsoft.com",
+    "microsoft.com",
+    "ntservicepack.microsoft.com",
+    "officecdn.microsoft.com",
+    "onegetcdn.azureedge.net",
+    "saas40.kaseya.net",
+    "stats.microsoft.com",
+    ".delivery.mp.microsoft.com",
+    "wustat.windows.com",
+    "ccms-opa.dev.legalservices.gov.uk",
+    "ccms-opa.uat.legalservices.gov.uk",
+    "ccms-opa.stg.legalservices.gov.uk",
+    "ccms-opa.legalservices.gov.uk",
+    ".csr.service.justice.gov.uk"
+  ],
+  "fw_home_net_ips": ["10.26.0.0/16", "10.27.0.0/16"]
+}

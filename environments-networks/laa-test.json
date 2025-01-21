@@ -3,14 +3,34 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.26.96.0/21",
-        "accounts": []
+        "accounts": [
+          "apex-test",
+          "ccms-ebs-test",
+          "ccms-ebs-upgrade-test",
+          "contract-work-administration-test",
+          "corporate-information-system-test",
+          "edw-test",
+          "eric-test",
+          "laa-mail-relay-test",
+          "laa-oem-test",
+          "maat-test",
+          "mlra-test",
+          "mojfin-test",
+          "oas-test",
+          "portal-test"
+        ]
       }
     }
   },
   "options": {
     "bastion_linux": true,
     "additional_cidrs": [],
-    "additional_endpoints": [],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.xray",
+      "com.amazonaws.eu-west-2.secretsmanager",
+      "com.amazonaws.eu-west-2.email-smtp"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

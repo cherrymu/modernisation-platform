@@ -1,0 +1,569 @@
+{
+  "default_block_development_test_ingress": {
+    "action": "DROP",
+    "source_ip": "0.0.0.0/0",
+    "destination_ip": "${mp-development-test}",
+    "destination_port": "ANY",
+    "protocol": "IP"
+  },
+  "gp_to_hmpps_development_http": {
+    "action": "PASS",
+    "source_ip": "${global-protect}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "80",
+    "protocol": "TCP"
+  },
+  "gp_to_hmpps_development_https": {
+    "action": "PASS",
+    "source_ip": "${global-protect}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "443",
+    "protocol": "TCP"
+  },
+  "cp_to_hmpps_development_https": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "443",
+    "protocol": "TCP"
+  },
+  "cp_to_hmpps_development_ldap": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "389",
+    "protocol": "TCP"
+  },
+  "cp_to_hmpps_development_ldaps": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "636",
+    "protocol": "TCP"
+  },
+  "cp_to_hmpps_development_pgres": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "5432",
+    "protocol": "TCP"
+  },
+  "laa_development_to_mp_laa_development": {
+    "action": "PASS",
+    "source_ip": "${laa-lz-development}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "ANY",
+    "protocol": "IP"
+  },
+  "laa_test_to_mp_laa_development": {
+    "action": "PASS",
+    "source_ip": "${laa-lz-test}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "ANY",
+    "protocol": "IP"
+  },
+  "laa_shared_services_to_mp_laa_development": {
+    "action": "PASS",
+    "source_ip": "${laa-lz-shared-services-nonprod}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "ANY",
+    "protocol": "IP"
+  },
+  "analytical_platform_to_mp_laa_development_oracledb": {
+    "action": "PASS",
+    "source_ip": "${analytical-platform-airflow-dev}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "cp_to_mp_platforms_development": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${platforms-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "cp_to_hmpps_development_oracledb": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "cp_to_mp_laa_development_oracledb": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "cp_to_mp_hmpps_development_jdbc": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "5439",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_saas_agent_tcp": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "0.0.0.0/0",
+    "destination_port": "5721",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_saas_agent_udp": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "0.0.0.0/0",
+    "destination_port": "5721",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_cp_oracledb": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${cloud-platform}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_pgres_tcp": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "0.0.0.0/0",
+    "destination_port": "5432",
+    "protocol": "TCP"
+  },
+  "platforms_development_to_cloud_platform_pgres": {
+    "action": "PASS",
+    "source_ip": "${platforms-development}",
+    "destination_ip": "${cloud-platform}",
+    "destination_port": "5432",
+    "protocol": "TCP"
+  },
+  "noms_test_dr_vnet_to_mp_hmpps_development": {
+    "action": "PASS",
+    "source_ip": "${noms-test-dr-vnet}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "mp_hmpps_development_to_noms_test_dr_vnet": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-test-dr-vnet}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "noms_test_vnet_to_mp_hmpps_development": {
+    "action": "PASS",
+    "source_ip": "${noms-test-vnet}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "mp_hmpps_development_to_noms_test_vnet": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-test-vnet}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "noms_mgmt_vnet_to_mp_hmpps_development": {
+    "action": "PASS",
+    "source_ip": "${noms-mgmt-vnet}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "noms_mgmt_dr_vnet_to_mp_hmpps_developmemnt": {
+    "action": "PASS",
+    "source_ip": "${noms-mgmt-dr-vnet}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "mp_to_hmpps_development_to_noms_mgmt_dr_vnet": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-dr-vnet}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "aks_studio_hosting_dev_1_vnet_to_mp_hmpps_development_oracledb": {
+    "action": "PASS",
+    "source_ip": "${aks-studio-hosting-dev-1-vnet}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "aks_studio_hosting_dev_1_vnet_to_mp_hmpps_development_https": {
+    "action": "PASS",
+    "source_ip": "${aks-studio-hosting-dev-1-vnet}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "443",
+    "protocol": "TCP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_dns": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "53",
+    "protocol": "UDP"
+  },
+  "laa_appstream_to_mp_laa_development": {
+    "action": "PASS",
+    "source_ip": "${laa-appstream-vpc}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "laa_appstream_additional_to_mp_laa_development": {
+    "action": "PASS",
+    "source_ip": "${laa-appstream-vpc_additional}",
+    "destination_ip": "${laa-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "cp_to_mp_platforms_development_icmp": {
+    "action": "PASS",
+    "source_ip": "${cloud-platform}",
+    "destination_ip": "${platforms-development}",
+    "destination_port": "ANY",
+    "protocol": "ICMP"
+  },
+  "hmpps_development_to_delius_eng_dev_oracledb": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-eng-dev}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "delius_eng_dev_to_hmpps_development_oracledb": {
+    "action": "PASS",
+    "source_ip": "${delius-eng-dev}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "delius_mis_dev_to_hmpps_development_ldap": {
+    "action": "PASS",
+    "source_ip": "${delius-mis-dev}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "389",
+    "protocol": "TCP"
+  },
+  "delius_mis_dev_to_hmpps_development_ldaps": {
+    "action": "PASS",
+    "source_ip": "${delius-mis-dev}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "636",
+    "protocol": "TCP"
+  },
+  "delius_mis_dev_to_hmpps_development_icmp": {
+    "action": "PASS",
+    "source_ip": "${delius-mis-dev}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "ANY",
+    "protocol": "ICMP"
+  },
+  "delius_mis_dev_to_hmpps_development_oracledb_1521": {
+    "action": "PASS",
+    "source_ip": "${delius-mis-dev}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "delius_mis_dev_to_hmpps_development_oracledb_1522": {
+    "action": "PASS",
+    "source_ip": "${delius-mis-dev}",
+    "destination_ip": "${hmpps-development}",
+    "destination_port": "1522",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev_icmp": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "ANY",
+    "protocol": "ICMP"
+  },
+  "hmpps_development_to_delius-mis-dev_http": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "80",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev_https": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "443",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev_oracledb_1521": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "1521",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev_oracledb_1522": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "1522",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev-2a_ad_all": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev-private-eu-west-2a}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev-2b_ad_all": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev-private-eu-west-2b}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev-2c_ad_all": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev-private-eu-west-2c}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_53": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "53",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_88": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "88",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_123": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "123",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_138": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "138",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_389": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "389",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_445": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "445",
+    "protocol": "UDP"
+  },
+  "hmpps_development_to_delius-mis-dev_ad_udp_464": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${delius-mis-dev}",
+    "destination_port": "464",
+    "protocol": "UDP"
+  },
+  "global-protect_to_data-insights-hub_development_redshift": {
+    "action": "PASS",
+    "source_ip": "${global-protect}",
+    "destination_ip": "${hq-development}",
+    "destination_port": "5439",
+    "protocol": "TCP"
+  },
+  "internal-networks_to_data-insights-hub_development_redshift": {
+    "action": "PASS",
+    "source_ip": "10.0.0.0/8",
+    "destination_ip": "${hq-development}",
+    "destination_port": "5439",
+    "protocol": "TCP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_ntp": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "123",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_ldap": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "389",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmg_vnet_ldap_ssl": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "636",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_kerberos": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "88",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_kerberos_password_change": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "464",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_smb": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "445",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_global_catalog_3268": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "3268",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_global_catalog_3269": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "3269",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_netbios_137": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "137",
+    "protocol": "UDP"
+  },
+  "mp_hmpps_development_to_noms_mgmt_vnet_netbios_138": {
+    "action": "PASS",
+    "source_ip": "${hmpps-development}",
+    "destination_ip": "${noms-mgmt-vnet}",
+    "destination_port": "138",
+    "protocol": "UDP"
+  },
+  "DOM1_atos_arkc_ras_vpn_to_mp_development": {
+    "action": "PASS",
+    "source_ip": "${atos_arkc_ras}",
+    "destination_ip": "${mp-development-test}",
+    "destination_port": "443",
+    "protocol": "TCP"
+  },
+  "DOM1_atos_arkf_ras_vpn_to_mp_development": {
+    "action": "PASS",
+    "source_ip": "${atos_arkf_ras}",
+    "destination_ip": "${mp-development-test}",
+    "destination_port": "443",
+    "protocol": "TCP"
+  },
+  "platforms_to_DOM1_nas_445": {
+    "action": "PASS",
+    "source_ip": "${platforms-development}",
+    "destination_ip": "10.172.68.0/23",
+    "destination_port": "445",
+    "protocol": "TCP"
+  },
+  "platforms_to_DOM1_nas_389": {
+    "action": "PASS",
+    "source_ip": "${platforms-development}",
+    "destination_ip": "10.172.68.0/23",
+    "destination_port": "389",
+    "protocol": "TCP"
+  },
+  "mp-dev-test_to_moj-smtp-relay-1": {
+    "action": "PASS",
+    "source_ip": "${mp-development-test}",
+    "destination_ip": "${moj-smtp-relay1}",
+    "destination_port": "25",
+    "protocol": "TCP"
+  },
+  "mp-dev-test_to_moj-smtp-relay-2": {
+    "action": "PASS",
+    "source_ip": "${mp-development-test}",
+    "destination_ip": "${moj-smtp-relay2}",
+    "destination_port": "25",
+    "protocol": "TCP"
+  },
+  "mp-dev-test_secure_to_moj-smtp-relay-1": {
+    "action": "PASS",
+    "source_ip": "${mp-development-test}",
+    "destination_ip": "${moj-smtp-relay1}",
+    "destination_port": "587",
+    "protocol": "TCP"
+  },
+  "mp-dev-test_secure_to_moj-smtp-relay-2": {
+    "action": "PASS",
+    "source_ip": "${mp-development-test}",
+    "destination_ip": "${moj-smtp-relay2}",
+    "destination_port": "587",
+    "protocol": "TCP"
+  },
+  "cica_aws_uat_a_to_cica_tariff_dev": {
+    "action": "PASS",
+    "source_ip": "${cica-aws-uat-a}",
+    "destination_ip": "${cica-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "cica_aws_uat_a_to_cica_tariff_dev_icmp": {
+    "action": "PASS",
+    "source_ip": "${cica-aws-uat-a}",
+    "destination_ip": "${cica-development}",
+    "destination_port": "ANY",
+    "protocol": "ICMP"
+  },
+  "cica_tariff_dev_to_cica_aws_uat_a": {
+    "action": "PASS",
+    "source_ip": "${cica-development}",
+    "destination_ip": "${cica-aws-uat-a}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "cica_tariff_dev_to_cica_onprem_uat": {
+    "action": "PASS",
+    "source_ip": "${cica-development}",
+    "destination_ip": "${cica-onprem-uat}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  },
+  "cica_onprem_uat_to_cica_tariff_dev": {
+    "action": "PASS",
+    "source_ip": "${cica-onprem-uat}",
+    "destination_ip": "${cica-development}",
+    "destination_port": "ANY",
+    "protocol": "TCP"
+  }
+}

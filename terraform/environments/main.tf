@@ -1,6 +1,7 @@
 terraform {
   # `backend` blocks do not support variables, so the following are hard-coded here:
   # - S3 bucket name, which is created in s3.tf
+  #checkov:skip=CKV_TF_3:Ensure state files are locked - temporarily suppressed pending issue #8789
   backend "s3" {
     acl     = "bucket-owner-full-control"
     bucket  = "modernisation-platform-terraform-state"
@@ -23,6 +24,17 @@ provider "aws" {
     role_arn = "arn:aws:iam::${local.modernisation_platform_account.id}:role/OrganizationAccountAccessRole"
   }
 }
+
+# AWS provider (Modernisation Platform): the Modernisation Platform account in eu-west-1 (replica region)
+provider "aws" {
+  alias  = "modernisation-platform-eu-west-1"
+  region = "eu-west-1"
+
+  assume_role {
+    role_arn = "arn:aws:iam::${local.modernisation_platform_account.id}:role/OrganizationAccountAccessRole"
+  }
+}
+
 
 provider "github" {
   owner = "ministryofjustice"

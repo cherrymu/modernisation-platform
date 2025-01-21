@@ -9,6 +9,9 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 defaults:
   run:
     shell: bash
@@ -17,10 +20,10 @@ jobs:
   create-and-commit-files:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           path: core-repo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
           repository: ministryofjustice/modernisation-platform-environments
           path: modernisation-platform-environments
@@ -33,35 +36,16 @@ jobs:
         run: bash ./core-repo/scripts/git-setup.sh ./modernisation-platform-environments
       - run: bash ./core-repo/scripts/git-commit.sh . ./modernisation-platform-environments
         env:  
-          TERRAFORM_GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
+          TERRAFORM_GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }} # use this token as writing to a different repo
       - run: bash ./core-repo/scripts/git-pull-request.sh terraform/environments ./modernisation-platform-environments
         env:
           TERRAFORM_GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
-      - uses: 8398a7/action-slack@v3
-        name: Slack failure notification
+      - name: Slack failure notification
+        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         with:
-          status: ${{ job.status }}
-          fields: workflow,job,repo,commit,message
+          webhook-type: incoming-webhook
+          payload: |
+            {"blocks":[{"type": "section","text": {"type": "mrkdwn","text": ":no_entry: Failed GitHub Action:"}},{"type": "section","fields":[{"type": "mrkdwn","text": "*Workflow:*\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.workflow }}>"},{"type": "mrkdwn","text": "*Job:*\n${{ github.job }}"},{"type": "mrkdwn","text": "*Repo:*\n${{ github.repository }}"}]}]}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: ${{ failure() }}
-
-  create-github-environments:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # or "2" To retrieve the preceding commit.
-      - name: Create GitHub member environments
-        run: bash ./scripts/git-create-environments.sh
-        env:
-          TERRAFORM_GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
-      - uses: 8398a7/action-slack@v3
-        name: Slack failure notification
-        with:
-          status: ${{ job.status }}
-          fields: workflow,job,repo,commit,message
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: ${{ failure() }}
-

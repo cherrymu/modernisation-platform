@@ -1,0 +1,22 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "maatdb",
+    "business-unit": "LAA",
+    "infrastructure-support": "laa_ops@digital.justice.gov.uk",
+    "owner": "laa-crime-apps@digital.justice.gov.uk",
+    "critical-national-infrastructure": true
+  },
+  "github-oidc-team-repositories": [""]
+}

@@ -1,0 +1,71 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "hmpps-electronic-monitoring-data-store",
+          "level": "sandbox",
+          "nuke": "exclude"
+        },
+        {
+          "sso_group_name": "azure-aws-sso-electronic-monitoring-data",
+          "level": "sandbox",
+          "nuke": "exclude"
+        }
+      ]
+    },
+    {
+      "name": "test",
+      "access": [
+        {
+          "sso_group_name": "hmpps-electronic-monitoring-data-store",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "azure-aws-sso-electronic-monitoring-data",
+          "level": "data-engineer"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "hmpps-electronic-monitoring-data-store",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "azure-aws-sso-electronic-monitoring-data",
+          "level": "data-engineer"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "hmpps-electronic-monitoring-data-store",
+          "level": "data-engineer"
+        },
+        {
+          "sso_group_name": "azure-aws-sso-electronic-monitoring-data",
+          "level": "data-engineer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "electronic-monitoring-data",
+    "business-unit": "HMPPS",
+    "infrastructure-support": "dataengineering@digital.justice.gov.uk",
+    "owner": "Data engineering: dataengineering@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [
+    "ministryofjustice/electronic-monitoring-data-lambda-functions",
+    "ministryofjustice/create-a-data-task"
+  ],
+  "go-live-date": ""
+}

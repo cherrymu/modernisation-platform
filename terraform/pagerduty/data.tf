@@ -15,6 +15,7 @@ data "aws_secretsmanager_secret_version" "environment_management" {
 data "aws_iam_policy_document" "pagerduty_secret" {
   #cannot reference secret in resources for statement as this causes cyclic error
   #checkov:skip=CKV_AWS_108
+  #checkov:skip=CKV_AWS_356: Policy is attached to a resource
   statement {
     sid    = "ReadOnlyFromModernisationPlatformOU"
     effect = "Allow"
@@ -37,6 +38,7 @@ data "aws_iam_policy_document" "pagerduty_kms" {
   #checkov:skip=CKV_AWS_108
   #checkov:skip=CKV_AWS_109: "Constraint is via only mp ou condition"
   #checkov:skip=CKV_AWS_111: "Constraint is via only mp ou condition"
+  #checkov:skip=CKV_AWS_356: Policy is attached to a resource
   statement {
     sid    = "AllowManagementAccountAccess"
     effect = "Allow"
@@ -62,4 +64,11 @@ data "aws_iam_policy_document" "pagerduty_kms" {
       values   = ["${data.aws_organizations_organization.root_account.id}/*/${local.environment_management.modernisation_platform_organisation_unit_id}/*"]
     }
   }
+}
+
+# default priority for DSO pagerduty slack integration
+# If ["*"] is set as elsewhere services with alarms don't change the dashboards in PagerDuty UI
+# Can be over-ridden manually later when someone's taken a look at the actual alert
+data "pagerduty_priority" "p5" {
+  name = "P5"
 }

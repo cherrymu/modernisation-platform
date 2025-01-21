@@ -1,0 +1,41 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "sandbox"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "dts-legacy",
+          "level": "developer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "dacp",
+    "business-unit": "HMCTS",
+    "infrastructure-support": "dts-legacy-apps-support-team@HMCTS.NET",
+    "owner": "DTS-ITServiceDesk@justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": ["ministryofjustice/Dacp"],
+  "go-live-date": "2023-10-04"
+}
