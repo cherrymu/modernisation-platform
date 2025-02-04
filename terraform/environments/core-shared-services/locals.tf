@@ -45,6 +45,8 @@ locals {
     ]
   }
 
+  core_logging_bucket_arns = jsondecode(data.aws_ssm_parameter.core_logging_bucket_arns.insecure_value)
+
   tags = {
     business-unit = "Platforms"
     application   = "Modernisation Platform: ${terraform.workspace}"

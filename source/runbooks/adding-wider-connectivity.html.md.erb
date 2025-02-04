@@ -1,9 +1,18 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Adding Wider Connectivity to the Modernisation Platform
-last_reviewed_on: 2022-05-24
-review_in: 6 month
+last_reviewed_on: 2024-12-13
+review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
@@ -19,11 +28,13 @@ Whilst we could directly connect things to our Modernisation Transit Gateway, th
 
 ### Egress from the MP TGW to PTTP TGW
 
-An egress route out of the platform must be added [here](https://github.com/ministryofjustice/modernisation-platform/blob/main/terraform/environments/core-network-services/transit_gateway_connections.tf#L73) to the appropriate non_live or live map.
+All private traffic that is not destined for a Modernisation Platform VPC is routed through to the PTTP TGW.
+
+Additional non private IP ranges that need to be routed through to the PTTP TGW should be added [here](https://github.com/ministryofjustice/modernisation-platform/blob/main/terraform/environments/core-network-services/transit_gateway_connections.tf#L52)
 
 ### From PTTP TGW to the new connectivity location
 
-A static route to the correct [TGW attachement](https://docs.aws.amazon.com/vpc/latest/tgw/working-with-transit-gateways.html) should be added under `attachment_static_routes` [here](https://github.com/ministryofjustice/deployment-tgw/blob/master/env/production/config.yml).
+A static route to the correct [TGW attachement](https://docs.aws.amazon.com/vpc/latest/tgw/working-with-transit-gateways.html) should be added under `attachment_static_routes` [here](https://github.com/ministryofjustice/deployment-tgw/blob/master/env/production/eu-west-2.yml).
 
 - `rtb_name` (route table name) should be `tgw-rtb-modplatform`. This is the route table associated with the MP TGW peering connection.
 - `destination` should be the CIDR range of the new connectivity location.
@@ -33,7 +44,7 @@ The TGW attachement may be a VPC, VPN, Direct Connect or another Transit Gateway
 
 ### From PTTP TGW back to the MP TGW
 
-A route to the MP TGW must be added in the relevant route table for the PTTP TGW attachement.  This should be added under `peering_static_routes` [here](https://github.com/ministryofjustice/deployment-tgw/blob/master/env/production/config.yml).
+A route to the MP TGW must be added in the relevant route table for the PTTP TGW attachement.  This should be added under `peering_static_routes` [here](https://github.com/ministryofjustice/deployment-tgw/blob/master/env/production/eu-west-2.yml).
 
 - `rtb_name` is the name of the relevant route table. This is the route table associated with the attachment.
 - `destination` should be the CIDR range of the Modernisation live or non live CIDR ranges.
@@ -41,11 +52,6 @@ A route to the MP TGW must be added in the relevant route table for the PTTP TGW
 
 Most PTTP TGW attachments come in to the `tgw-rtb-security` or the `tgw-rtb-probation` route tables, the Modernisation Platform ranges have been added to these already so there is no need to add them again, but new tables may be added in the future.
 
-## Cloud Platform Connectivity
-
-Connectivity through to the Cloud Platform goes through [additional Transit Gateways](https://github.com/ministryofjustice/transit-gateways).
-Along with the steps above routes were added [here](https://github.com/ministryofjustice/transit-gateways/pull/10/files).
-This has been done for the Modernisation Platform live and non live environments, so no further routing is needed to connect to the Cloud Plaform, only steps detailed [here](#other-steps).
 ## Diagram
 
 A high level diagram of the wider MoJ networking can be found [here](https://drive.google.com/file/d/1w8dZs5vZOoy0dvCnRr5P6GHc3VQRdwLq/view?usp=sharing).
@@ -54,6 +60,5 @@ A high level diagram of the wider MoJ networking can be found [here](https://dri
 
 Remember to do the following in addition to the above in the Modernisation Platform to allow traffic:
 
-- Add appropriate Firewall rules
-- Open appropriate NACLs for the business unit subnet sets per relevant environment
+- Add appropriate [Firewall rules](../concepts/networking/network-firewall.html)
 - Add allow rules to the appropriate Security Groups

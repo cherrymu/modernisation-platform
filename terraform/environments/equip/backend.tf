@@ -8,6 +8,7 @@ terraform {
     encrypt              = true
     key                  = "terraform.tfstate"
     region               = "eu-west-2"
+    use_lockfile         = true
     workspace_key_prefix = "environments/accounts/equip" # This will store the object as environments/accounts/equip/${workspace}/terraform.tfstate
   }
 }

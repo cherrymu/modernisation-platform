@@ -1,15 +1,24 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Useful scripts
-last_reviewed_on: 2022-07-20
+last_reviewed_on: 2024-08-23
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
 In the Modernisation Platform repository, we have some [useful scripts](https://github.com/ministryofjustice/modernisation-platform/tree/main/scripts) to:
 
-- help with day-to-day tasks whilst working on the Modernisation Platform
+- help to automate parts of our day-to-day tasks whilst working on the Modernisation Platform
 - map common functions to work in CI/CD
 
 ## Git scripts
@@ -59,4 +68,3 @@ The scripts prefixed `terraform-` are for running common `terraform` commands as
 |-|-|-|
 | [`internal/upgrade-terraform-providers.sh`](https://github.com/ministryofjustice/modernisation-platform/blob/main/scripts/internal/upgrade-terraform-providers.sh) | This script looks for any directory that holds a `*.tf` file, unless it's a `.terraform` directory or is the `templates/` directory, and runs `terraform init -upgrade` within them. It's useful for bulk-updating all of the Terraform providers and modules in one go | ❌ |
 | [`internal/find-terraform-workspace.sh`](https://github.com/ministryofjustice/modernisation-platform/blob/main/scripts/internal/find-terraform-workspace.sh) | This script finds terraform workspaces for an environment when it needs to be [deleted](deleting-an-environment.html) | ❌ |
-| [`internal/get-testing-ci-user-creds/get_testing_creds.go`](https://github.com/ministryofjustice/modernisation-platform/tree/main/scripts/internal/get-testing-ci-user-creds) | This script retrieves the testing-ci user credentials for use when running tests locally | ❌ |

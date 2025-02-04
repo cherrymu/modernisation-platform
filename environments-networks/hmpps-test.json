@@ -3,14 +3,34 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.26.8.0/21",
-        "accounts": ["nomis-test", "oasys-test"]
+        "accounts": [
+          "corporate-staff-rostering-test",
+          "delius-alfresco-test",
+          "delius-core-test",
+          "delius-jitbit-test",
+          "digital-prison-reporting-test",
+          "electronic-monitoring-data-test",
+          "hmpps-domain-services-test",
+          "hmpps-oem-test",
+          "nomis-combined-reporting-test",
+          "nomis-data-hub-test",
+          "nomis-test",
+          "oasys-national-reporting-test",
+          "oasys-test",
+          "planetfm-test"
+        ]
       }
     }
   },
   "options": {
     "bastion_linux": true,
     "additional_cidrs": [],
-    "additional_endpoints": [],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.execute-api",
+      "com.amazonaws.eu-west-2.kinesis-streams",
+      "com.amazonaws.eu-west-2.secretsmanager"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   },

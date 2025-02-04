@@ -6,32 +6,27 @@ locals {
 }
 
 module "vpc" {
+  #checkov:skip=CKV_TF_1:Local reference
   for_each = local.networking
   source   = "../../modules/vpc-hub"
 
   # CIDRs
   vpc_cidr = each.value
 
-  # private gateway type
+  # Gateway type
   #   nat = Nat Gateway
   #   transit = Transit Gateway
   #   none = no gateway for internal traffic
   gateway = "transit"
 
   # VPC Flow Logs
-  vpc_flow_log_iam_role = data.aws_iam_role.vpc-flow-log.arn
+  vpc_flow_log_iam_role       = aws_iam_role.vpc_flow_log.arn
+  flow_log_s3_destination_arn = each.key == "live_data" ? local.core_logging_bucket_arns["vpc-flow-logs"] : ""
+
+  # Transit Gateway ID
+  transit_gateway_id = data.aws_ec2_transit_gateway.transit-gateway.id
 
   # Tags
   tags_common = local.tags
   tags_prefix = each.key
-}
-
-module "core-vpc-tgw-routes" {
-  for_each = local.networking
-  source   = "../../modules/core-vpc-tgw-routes"
-
-  transit_gateway_id = data.aws_ec2_transit_gateway.transit-gateway.id
-  route_table_ids    = module.vpc[each.key].private_route_tables
-
-  depends_on = [module.vpc_attachment]
 }

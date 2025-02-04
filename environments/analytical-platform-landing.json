@@ -1,0 +1,25 @@
+{
+  "account-type": "member-unrestricted",
+  "environments": [
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "analytical-platform-landing-production-administrator",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "data-platform-audit-and-security",
+          "level": "security-audit"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "analytical-platform-landing",
+    "business-unit": "Platforms",
+    "infrastructure-support": "analytical_platform@digital.justice.gov.uk",
+    "owner": "Analytical Platform: analytical_platform@digital.justice.gov.uk"
+  },
+  "github-oidc-team-repositories": [""]
+}

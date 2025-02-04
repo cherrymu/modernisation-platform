@@ -13,11 +13,9 @@ provider "aws" {
 #tfsec:ignore:AWS098 tfsec:ignore:AWS002 tfsec:ignore:aws-s3-block-public-acls tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "acm-pca" {
   #checkov:skip=CKV_AWS_18:Ignore warnings regarding lack of s3 bucket server access logging - considered overkill given bucket purpose and restricted access to bucket
-  #checkov:skip=CKV_AWS_19:Moved to new resource in 4.0 provider
-  #checkov:skip=CKV_AWS_21:Moved to new resource in 4.0 provider
   #checkov:skip=CKV_AWS_144:Ignore lack of cross-regional replication - not required here - represents an overkill
-  #checkov:skip=CKV_AWS_145:Moved to new resource in 4.0 provider
   #checkov:skip=CKV2_AWS_41:As noted above, logging considered overkill given bucket purpose
+  #checkov:skip=CKV2_AWS_62:As noted above, event notifications not required
   bucket_prefix = "acm"
 
   lifecycle {
@@ -38,6 +36,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "acm-pca" {
   rule {
     id     = "default"
     status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = "3"
+    }
 
     transition {
       days          = 30
@@ -284,6 +286,7 @@ resource "aws_kms_alias" "acm-alias" {
 data "aws_iam_policy_document" "kms-acm" {
   # checkov:skip=CKV_AWS_109: "Key policy requires asterisk resource - see note above"
   # checkov:skip=CKV_AWS_111: "Key policy requires asterisk resource - see note above"
+  # checkov:skip=CKV_AWS_356: "Key policy requires asterisk resource - see note above"
 
   statement {
     effect  = "Allow"

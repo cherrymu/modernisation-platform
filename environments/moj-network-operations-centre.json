@@ -1,0 +1,39 @@
+{
+  "account-type": "member-unrestricted",
+  "environments": [
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "moj-official-techops",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "moj-official-techops-readonly",
+          "level": "view-only"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "moj-official-techops",
+          "level": "administrator"
+        },
+        {
+          "sso_group_name": "moj-official-techops-readonly",
+          "level": "view-only"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "moj-official",
+    "business-unit": "HQ",
+    "infrastructure-support": "MOJNOC@justice.gov.uk",
+    "owner": "chinyere.onuoha@justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""]
+}

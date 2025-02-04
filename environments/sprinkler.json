@@ -1,12 +1,57 @@
 {
   "account-type": "member",
+  "components": [
+    {
+      "name": "playground",
+      "sso_group_name": "modernisation-platform"
+    },
+    {
+      "name": "testbed"
+    }
+  ],
   "environments": [
     {
       "name": "development",
       "access": [
         {
-          "github_slug": "modernisation-platform",
-          "level": "sandbox"
+          "sso_group_name": "modernisation-platform",
+          "level": "developer",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "reporting-operations",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "migration",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "data-engineer",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform-security",
+          "level": "instance-management",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "fleet-manager",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "modernisation-platform",
+          "level": "quicksight-admin",
+          "nuke": "rebuild"
+        },
+        {
+          "sso_group_name": "azure-aws-sso-modernisation-platform",
+          "level": "developer",
+          "nuke": "rebuild"
         }
       ]
     }
@@ -14,6 +59,11 @@
   "tags": {
     "application": "modernisation-platform",
     "business-unit": "Platforms",
-    "owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk"
-  }
+    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
+    "owner": "Modernisation Platform : modernisation-platform@digital.justice.gov.uk",
+    "slack-channel": "modernisation-platform",
+    "critical-national-infrastructure": false
+  },
+  "go-live-date": "",
+  "github-oidc-team-repositories": [""]
 }

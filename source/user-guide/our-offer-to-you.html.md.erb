@@ -2,9 +2,18 @@
 owner_slack: "#modernisation-platform"
 title: Our offer to you
 weight: 1
-last_reviewed_on: 2022-06-16
+last_reviewed_on: 2024-11-11
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
@@ -13,23 +22,27 @@ review_in: 6 months
 We offer the following, which are managed on your behalf by the [Modernisation Platform team](../team/team.html):
 
 - [automatic environment provisioning](creating-environments.html)
-- [secure baselines](../concepts/environments/security.html)
-- [centralised networking for all applications, including VPCs, subnets, inter-application connections](../concepts/networking/networking-approach.html)
 - [automated domain allocation and DNS for all applications](../concepts/networking/dns.html)
 - [automated certificate services for all applications](../concepts/networking/certificate-services.html)
 - [automated CI/CD pipelines to deploy infrastructure to the correct environment](deploying-your-infrastructure.html)
-- [automated CI/CD pipelines to deploy applications to the correct environment](deploying-your-application.html)
+- [automated CI/CD user creation to enable deployment applications to the correct environment](deploying-your-application.html)
 - [automated pipelines to build AMI images](https://github.com/ministryofjustice/modernisation-platform-ami-builds)
-- [private connectivity to other MoJ hosting areas](wider-moj-connectivity.html)
-- [centralised SSO for MoJ GitHub users](../concepts/networking/single-sign-on.html)
 - [automated IAM user creation and configuration for collaborators](../runbooks/adding-collaborators.html)
+- [automatic shutdown of non production instances](../concepts/environments/instance-scheduling.html)
+- [automated patching](automated-patching.html)
+- [centralised networking for all applications, including VPCs, subnets, inter-application connections](../concepts/networking/networking-approach.html)
+- [centralised SSO for MoJ GitHub users](../concepts/environments/single-sign-on.html)
+- [maintained terraform examples / modules](https://github.com/ministryofjustice/modernisation-platform-environments/tree/main/terraform/environments/example)
+- [on-call support for customers with production applications](../team/operational-processes.html)
+- [private connectivity to other MoJ hosting areas](wider-moj-connectivity.html)
+- [secure baselines](../concepts/environments/security.html)
 
 ## What we're exploring support for in the future
 
-Please see our [roadmap](https://app.productplan.com/pr/rY8sb6v1YYLZl4_dSKNSrUbasx2Ivzob) for what we are exploring in the future.
+Please see our [roadmap](https://docs.google.com/presentation/d/10KdJ5cKKJTp3AcH3aS9hE-WkwjWTu8o30WpxONczlG4/edit#slide=id.p) for what we are exploring in the future.
 A full list of issues and stories are in our [backlog](https://github.com/orgs/ministryofjustice/projects/17/views/1).
 
-If there you is a feature you would like to see on the Modernisation Platform, please add it as a new story in our backlog [here](https://github.com/ministryofjustice/modernisation-platform/issues/new?assignees=&labels=enhancement&template=story-template.md)
+If there is a feature you would like to see on the Modernisation Platform, please add it as a new story in our backlog [here](https://github.com/ministryofjustice/modernisation-platform/issues/new?assignees=&labels=enhancement&template=story-template.md)
 
 ## What we don't offer
 

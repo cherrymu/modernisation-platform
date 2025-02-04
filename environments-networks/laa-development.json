@@ -3,14 +3,36 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.26.56.0/21",
-        "accounts": ["apex-development", "mlra-development"]
+        "accounts": [
+          "apex-development",
+          "ccms-ebs-development",
+          "ccms-ebs-upgrade-development",
+          "contract-work-administration-development",
+          "corporate-information-system-development",
+          "edw-development",
+          "laa-ccms-infra-azure-ad-sso-development",
+          "laa-mail-relay-development",
+          "laa-oem-development",
+          "laa-stabilisation-cdc-poc-development",
+          "maat-development",
+          "maatdb-development",
+          "mlra-development",
+          "mojfin-development",
+          "oas-development",
+          "portal-development"
+        ]
       }
     }
   },
   "options": {
     "bastion_linux": true,
     "additional_cidrs": [],
-    "additional_endpoints": [],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.xray",
+      "com.amazonaws.eu-west-2.secretsmanager",
+      "com.amazonaws.eu-west-2.email-smtp"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

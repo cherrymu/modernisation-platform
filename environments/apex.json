@@ -5,7 +5,50 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "laa-aws-infrastructure",
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-apex-developer",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "test",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-apex-developer",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-apex-developer",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-apex-developer",
           "level": "developer"
         }
       ]
@@ -14,8 +57,10 @@
   "tags": {
     "application": "apex",
     "business-unit": "LAA",
-    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
-    "owner": "aws-webops-laa@digital.justice.gov.uk"
+    "infrastructure-support": "laa_ops@digital.justice.gov.uk",
+    "owner": "laa_ops@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
   },
-  "debug-toggle": "true"
+  "github-oidc-team-repositories": ["ministryofjustice/laa-apex"],
+  "go-live-date": "2024-11-27"
 }

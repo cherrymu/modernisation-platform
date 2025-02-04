@@ -14,38 +14,6 @@ data "aws_route53_zone" "private" {
   private_zone = true
 }
 
-# lookups for routing
-
-data "aws_vpc" "selected" {
-  provider = aws.core-network-services
-
-  filter {
-    name   = "tag:Name"
-    values = [local.type]
-  }
-}
-
-data "aws_route_table" "main-public" {
-  provider = aws.core-network-services
-
-  vpc_id = data.aws_vpc.selected.id
-
-  filter {
-    name   = "tag:Name"
-    values = ["${local.type}-public"]
-  }
-}
-
-data "aws_ec2_transit_gateway_route_table" "external_inspection_out" {
-  provider = aws.core-network-services
-
-  filter {
-    name   = "tag:Name"
-    values = ["firewall"]
-  }
-
-}
-
 locals {
 
   type = local.is-live_data ? "live_data" : "non_live_data"
@@ -115,51 +83,19 @@ locals {
 }
 
 module "vpc" {
-  for_each = local.vpcs[terraform.workspace]
-
-  source = "github.com/ministryofjustice/modernisation-platform-terraform-member-vpc?ref=v1.2.0"
-
-  subnet_sets = { for key, subnet in each.value.cidr.subnet_sets : key => subnet.cidr }
-
+  for_each             = local.vpcs[terraform.workspace]
+  source               = "github.com/ministryofjustice/modernisation-platform-terraform-member-vpc?ref=1366ebe0812d4c129c0b31cfc5bf2a4b0540672c" # v3.1.0
   additional_endpoints = each.value.options.additional_endpoints
-  bastion_linux        = each.value.options.bastion_linux
-  #bastion_windows = each.value.options.bastion_windows
-
-  transit_gateway_id = data.aws_ec2_transit_gateway.transit-gateway.id
+  subnet_sets          = { for key, subnet in each.value.cidr.subnet_sets : key => subnet.cidr }
+  transit_gateway_id   = data.aws_ec2_transit_gateway.transit-gateway.id
 
   # VPC Flow Logs
-  vpc_flow_log_iam_role = data.aws_iam_role.vpc-flow-log.arn
-
-  # # CIDRs
-  # subnet_cidrs_by_type = each.value.cidr.subnets
-  # vpc_cidr             = each.value.cidr.vpc
-
-  # # NACL rules
-  # nacl_ingress = each.value.nacl.ingress
-  # nacl_egress  = each.value.nacl.egress
-
-  # # NAT Gateway
-  # enable_nat_gateway = false
+  vpc_flow_log_iam_role       = aws_iam_role.vpc_flow_log.arn
+  flow_log_s3_destination_arn = local.is-production ? local.core_logging_bucket_arns["vpc-flow-logs"] : ""
 
   # Tags
   tags_common = local.tags
   tags_prefix = each.key
-}
-
-module "vpc_tgw_routing" {
-  source = "../../modules/vpc-tgw-routing"
-
-  for_each = local.vpcs[terraform.workspace]
-
-  providers = {
-    aws = aws.core-network-services
-  }
-
-  route_table = data.aws_route_table.main-public
-  subnet_sets = { for key, subnet in each.value.cidr.subnet_sets : key => subnet.cidr }
-  tgw_id      = data.aws_ec2_transit_gateway.transit-gateway.id
-
-  depends_on = [module.vpc_attachment, module.vpc]
 }
 
 module "vpc_nacls" {
@@ -196,16 +132,6 @@ module "resource-share" {
   # Tags
   tags_common = local.tags
   tags_prefix = each.key
-}
-
-module "core-vpc-tgw-routes" {
-  for_each = local.vpcs[terraform.workspace]
-  source   = "../../modules/core-vpc-tgw-routes"
-
-  transit_gateway_id = data.aws_ec2_transit_gateway.transit-gateway.id
-  route_table_ids    = module.vpc[each.key].private_route_tables
-
-  depends_on = [module.vpc_attachment]
 }
 
 module "dns-zone" {
@@ -251,6 +177,18 @@ module "dns_zone_extend" {
   dns_domain  = ".modernisation-platform.internal"
 }
 
+module "dns_zone_extend_private" {
+  source = "../../modules/dns-zone-extend-private"
+  providers = {
+    aws.core-network-services = aws.core-network-services
+    aws.core-vpc              = aws
+  }
+
+  for_each  = local.vpcs[terraform.workspace]
+  zone_name = { for key, zone in each.value.options.additional_private_zones : key => zone }
+  vpc_id    = module.vpc[each.key].vpc_id
+}
+
 resource "aws_iam_role" "member-delegation" {
   for_each = local.vpcs[terraform.workspace]
 
@@ -282,6 +220,9 @@ resource "aws_iam_role" "member-delegation" {
 }
 
 resource "aws_iam_role_policy" "member-delegation" {
+  # checkov:skip=CKV_AWS_355: This create and manage on multiple resources which have not yet been defined
+  # checkov:skip=CKV_AWS_290: This create and manage on multiple resources which have not yet been defined
+  # checkov:skip=CKV_AWS_289: This create and manage on multiple resources which have not yet been defined
   for_each = local.vpcs[terraform.workspace]
 
   name = "member-delegation-${each.key}"
@@ -307,6 +248,7 @@ resource "aws_iam_role_policy" "member-delegation" {
           "route53resolver:AssociateResolverRule",
           "route53resolver:GetResolverRuleAssociation",
           "route53resolver:UpdateResolverRule",
+          "route53resolver:TagResource",
           "ec2:DescribeSubnets",
           "route53resolver:ListTagsForResource",
           "ec2:DescribeAvailabilityZones",
@@ -315,6 +257,7 @@ resource "aws_iam_role_policy" "member-delegation" {
           "ec2:DescribeNetworkInterfaces",
           "ec2:DeleteNetworkInterface",
           "ec2:CreateNetworkInterfacePermission",
+          "ec2:CreateTags",
           "ec2:DescribeSecurityGroupReferences",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeSecurityGroupRules",
@@ -355,14 +298,25 @@ resource "aws_iam_role_policy" "member-delegation" {
           "arn:aws:route53:::hostedzone/${module.dns-zone[each.key].zone_private}"
         ]
       },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:GetLogEvents"
+        ],
+        "Resource" : [
+          "arn:aws:logs:*:*:log-group::log-stream:",
+          "arn:aws:logs:*:*:log-group:*-vpc-flow-logs-*:log-stream:*",
+        ],
+      },
     ]
   })
 }
 
 # Read only role for developer sso plans and for viewing via the console
 resource "aws_iam_role" "member_delegation_read_only" {
-  name                = "member-delegation-read-only"
-  managed_policy_arns = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
+  name = "member-delegation-read-only"
   assume_role_policy = jsonencode( # checkov:skip=CKV_AWS_60: "the policy is secured with the condition"
     {
       "Version" : "2012-10-17",
@@ -388,4 +342,21 @@ resource "aws_iam_role" "member_delegation_read_only" {
       Name = "member-delegation-read-only"
     },
   )
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "member_delegation_read_only" {
+  policy_arns = ["arn:aws:iam::aws:policy/ReadOnlyAccess"]
+  role_name   = aws_iam_role.member_delegation_read_only.name
+}
+
+# R53 Resolver DNS Firewall
+module "r53_dns_firewall" {
+  for_each = local.vpcs[terraform.workspace]
+  source   = "../../modules/r53-dns-firewall"
+
+  vpc_id                    = module.vpc[each.key].vpc_id
+  pagerduty_integration_key = local.pagerduty_integration_keys["core_alerts_cloudwatch"]
+
+  tags_prefix = each.key
+  tags_common = local.tags
 }

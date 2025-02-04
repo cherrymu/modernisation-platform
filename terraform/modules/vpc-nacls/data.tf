@@ -45,7 +45,7 @@ locals {
   # 2000 = inter-vpc traffic (dynamic rules)
   # 3000 = deny east-west
   # 4000 = private address ranges
-  # 5000 = https internet access
+  # 5000 = internet access
   # 6000 = public address ranges (dynamic)
   # 7000 = access from internet
 
@@ -75,6 +75,24 @@ locals {
       protocol    = "-1"
       rule_action = "deny"
       rule_number = 3000
+      to_port     = null
+    },
+    allow_10-27-136-0_in = {
+      cidr_block  = "10.27.136.0/21"
+      egress      = false
+      from_port   = null
+      protocol    = "-1"
+      rule_action = "allow"
+      rule_number = 2010
+      to_port     = null
+    },
+    allow_10-27-136-0_out = {
+      cidr_block  = "10.27.136.0/21"
+      egress      = true
+      from_port   = null
+      protocol    = "-1"
+      rule_action = "allow"
+      rule_number = 2010
       to_port     = null
     },
     deny_mp_cidr_out = {
@@ -149,6 +167,51 @@ locals {
       rule_number = 5000
       to_port     = 443
     },
+    allow_0-0-0-0_http_out = {
+      cidr_block  = "0.0.0.0/0"
+      egress      = true
+      from_port   = 80
+      protocol    = "tcp"
+      rule_action = "allow"
+      rule_number = 5100
+      to_port     = 80
+    },
+    allow_0-0-0-0_smtp_465_tcp_out = {
+      cidr_block  = "0.0.0.0/0"
+      egress      = true
+      from_port   = 465
+      protocol    = "tcp"
+      rule_action = "allow"
+      rule_number = 5200
+      to_port     = 465
+    },
+    allow_0-0-0-0_smtp_submission_tcp_out = {
+      cidr_block  = "0.0.0.0/0"
+      egress      = true
+      from_port   = 587
+      protocol    = "tcp"
+      rule_action = "allow"
+      rule_number = 5300
+      to_port     = 587
+    },
+    allow_0-0-0-0_agent_tcp_out = {
+      cidr_block  = "0.0.0.0/0"
+      egress      = true
+      from_port   = 5721
+      protocol    = "tcp"
+      rule_action = "allow"
+      rule_number = 5400
+      to_port     = 5721
+    },
+    deny_0-0-0-0_remote-desktop_tcp_in = {
+      cidr_block  = "0.0.0.0/0"
+      egress      = false
+      from_port   = 3389
+      protocol    = "tcp"
+      rule_action = "deny"
+      rule_number = 5000
+      to_port     = 3389
+    },
     allow_0-0-0-0_dynamic_tcp_in = {
       cidr_block  = "0.0.0.0/0"
       egress      = false
@@ -217,6 +280,15 @@ locals {
       rule_action = "allow"
       rule_number = 1100
       to_port     = 587
+    },
+    allow_redshift_in = {
+      cidr_block  = data.aws_vpc.current.cidr_block
+      egress      = false
+      from_port   = 5439
+      protocol    = "tcp"
+      rule_action = "allow"
+      rule_number = 1200
+      to_port     = 5439
     },
     allow_dynamic_tcp_out = {
       cidr_block  = data.aws_vpc.current.cidr_block

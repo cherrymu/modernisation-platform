@@ -5,25 +5,48 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "modernisation-platform",
+          "sso_group_name": "modernisation-platform",
           "level": "developer"
+        },
+        {
+          "sso_group_name": "ppud-replacement-devs",
+          "level": "fleet-manager"
         }
-      ]
+      ],
+      "additional_reviewers": ["umeshc-roy", "nbuckingham72"]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "ppud-replacement-devs",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "ppud-replacement-devs",
+          "level": "fleet-manager"
+        }
+      ],
+      "additional_reviewers": ["umeshc-roy", "nbuckingham72"]
     },
     {
       "name": "production",
       "access": [
         {
-          "github_slug": "ppud-replacement-devs",
+          "sso_group_name": "ppud-replacement-devs",
           "level": "developer"
         }
-      ]
+      ],
+      "additional_reviewers": ["umeshc-roy", "nbuckingham72"]
     }
   ],
   "tags": {
     "application": "ppud",
     "business-unit": "HMPPS",
-    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
-    "owner": "deepee.mann-basra@digital.justice.gov.uk"
-  }
+    "infrastructure-support": "PPUDnotification@justice.gov.uk",
+    "owner": "deepee.mann-basra@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""],
+  "go-live-date": "2023-07-24"
 }

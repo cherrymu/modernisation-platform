@@ -3,7 +3,16 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.26.16.0/21",
-        "accounts": ["example-development"]
+        "accounts": [
+          "analytical-platform-compute-development",
+          "analytical-platform-ingestion-development",
+          "example-development",
+          "data-platform-development",
+          "data-platform-apps-and-tools-development",
+          "observability-platform-development",
+          "operations-engineering-development",
+          "panda-cyber-appsec-lab-development"
+        ]
       }
     }
   },
@@ -11,6 +20,7 @@
     "bastion_linux": true,
     "additional_cidrs": [],
     "additional_endpoints": [],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

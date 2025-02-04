@@ -5,8 +5,14 @@
       "name": "development",
       "access": [
         {
-          "github_slug": "modernisation-platform",
-          "level": "developer"
+          "sso_group_name": "modernisation-platform",
+          "level": "developer",
+          "nuke": "exclude"
+        },
+        {
+          "sso_group_name": "green-ops",
+          "level": "data-engineer",
+          "nuke": "exclude"
         }
       ]
     }
@@ -14,6 +20,14 @@
   "tags": {
     "application": "example",
     "business-unit": "Platforms",
-    "owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk"
-  }
+    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
+    "owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk",
+    "slack-channel": "modernisation-platform",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [
+    "ministryofjustice/modernisation-platform",
+    "ministryofjustice/modernisation-platform-configuration-management"
+  ],
+  "go-live-date": ""
 }

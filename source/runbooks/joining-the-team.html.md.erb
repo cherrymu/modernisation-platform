@@ -1,9 +1,18 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Joining the team
-last_reviewed_on: 2023-05-23
-review_in: 3 months
+last_reviewed_on: 2024-12-19
+review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
@@ -11,14 +20,14 @@ Welcome to the team! Below is some information that you might find useful.
 
 ## General information
 
-- Our standups are currently at 9.15am every morning
+- Our standups are currently at 9.30am every morning
 - We have our sprint retrospective every fortnight on a Monday morning
-- We have our sprint planning every fornight on a Tuesday morning
+- We have our sprint planning every fornight on a Monday morning
 - We plan our sprints through [GitHub Projects](https://github.com/orgs/ministryofjustice/projects/17)
 
 ### Team
 
-See our [team information](../#team-information) for:
+See our [team information](../index.html#modernisation-platform-team-information) for:
 
 - our alliance
 - our roadmap
@@ -33,15 +42,17 @@ When you join the team, we want you to feel welcome and included. With your inpu
 
 ### Google Meet, Microsoft Teams, Slack, Zoom? Oh my!
 
-Our main chat platform is Slack.
+Our main chat platform is Slack, our fallback option is Microsoft Teams.
 
-We use Google Meet for team calls, and use Slack for direct calls.
+We use Microsoft Teams for team calls, and use Slack for direct calls. Our fallback option is Google Meet.
 
-We rarely use Microsoft Teams or Zoom, though some all-staff meetings are held on either.
+We rarely use Zoom, though some all-staff meetings are held on it.
+
+For email we use Justice Digital Google Mail, with Microsoft Justice email as a fallback option.
+
+For development work any IDE can be used, but many team members choose Visual Studio Code
 
 ### Slack channels to join
-
-We have three Slack channels.
 
 #### #modernisation-platform
 
@@ -70,6 +81,29 @@ The [#modernisation-platform-notifications](https://mojdt.slack.com/archives/C01
 
 It's a noisy channel, so it's up to you whether to join it.
 
+#### #modernisation-platform-update
+
+The [#modernisation-platform-update](https://mojdt.slack.com/archives/C02L5MCJ12N) channel is where we:
+
+- let users know of any changes which may affect them
+
+This is a low noise channel, only post relevant updates in here which all teams need to hear.
+
+#### #modernisation-platform-high-priority-alarms
+
+The [#modernisation-platform-high-priority-alarms](https://mojdt.slack.com/archives/C03CY6451QT) channel is where:
+
+- high priority alarms are posted from PagerDuty, if something is posted here it will require immediate attention.
+
+#### #modernisation-platform-low-priority-alarms
+
+The [#modernisation-platform-low-priority-alarms](https://mojdt.slack.com/archives/C02PFCG8M1R) channel is where:
+
+- low priority alarms are posted from PagerDuty, if something is posted here it will not require immediate attention.
+
+The [#modernisation-platform-security-hub-alerts](https://moj.enterprise.slack.com/archives/C07SNBJBVC6) channel is where:
+- security hub alerts are posted from PagerDuty, if something is posted here it will require prompt attention.
+
 ### GitHub teams to join (optional)
 
 To add or close issues in our GitHub Project, you need to join the [modernisation-platform](https://github.com/orgs/ministryofjustice/teams/modernisation-platform) team on GitHub.
@@ -77,6 +111,10 @@ To add or close issues in our GitHub Project, you need to join the [modernisatio
 The team memberships are [defined in code](https://github.com/ministryofjustice/modernisation-platform/blob/main/terraform/github/modules/team/main.tf#L12). If you're comfortable doing so, please add your GitHub username there.
 
 If you're not comfortable updating Terraform files, send a message in the [#modernisation-platform](https://mojdt.slack.com/archives/C013RM6MFFW) channel and someone in the team will help you.
+
+## File Storage
+
+We use Google Workspace (Docs, Sheets, Drive etc), any files which we wish to keep should be stored [here](https://drive.google.com/drive/folders/1FaYhbFK68o_W4doGX7mZqR4dU3OrhuOl)
 
 ## Further information
 

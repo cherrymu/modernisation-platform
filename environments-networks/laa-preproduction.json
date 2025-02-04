@@ -3,14 +3,32 @@
     "subnet_sets": {
       "general": {
         "cidr": "10.27.72.0/21",
-        "accounts": []
+        "accounts": [
+          "apex-preproduction",
+          "ccms-ebs-preproduction",
+          "contract-work-administration-preproduction",
+          "corporate-information-system-preproduction",
+          "edw-preproduction",
+          "laa-mail-relay-preproduction",
+          "laa-oem-preproduction",
+          "maat-preproduction",
+          "mlra-preproduction",
+          "mojfin-preproduction",
+          "oas-preproduction",
+          "portal-preproduction"
+        ]
       }
     }
   },
   "options": {
     "bastion_linux": false,
     "additional_cidrs": [],
-    "additional_endpoints": [],
+    "additional_endpoints": [
+      "com.amazonaws.eu-west-2.xray",
+      "com.amazonaws.eu-west-2.secretsmanager",
+      "com.amazonaws.eu-west-2.email-smtp"
+    ],
+    "additional_private_zones": [],
     "additional_vpcs": [],
     "dns_zone_extend": []
   }

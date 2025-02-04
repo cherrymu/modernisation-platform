@@ -1,15 +1,28 @@
 ---
 owner_slack: "#modernisation-platform"
 title: DNS
-last_reviewed_on: 2022-09-30
+last_reviewed_on: 2024-12-06
 review_in: 6 months
 ---
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
+
 # <%= current_page.data.title %>
 
-DNS is centralised in the networking services account.
+DNS is centralised in the core networking services account.
+
+We use [AWS Route 53](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html) to provide and manage DNS records.
 
 There are public and private [hosted zones](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) for the Modernisation Platform.
+
+We also cater for application-specific public hosted zones.
 
 ![DNS Zones](../../images/dns.png)
 
@@ -23,7 +36,7 @@ DNS entries for applications will be created in the relevant zone following the 
 
 #### Example
 
-ccr.laa-preproduction.modernisation-platform.service.justice.gov.uk
+`ccr.laa-preproduction.modernisation-platform.service.justice.gov.uk`
 
 ### Private
 
@@ -35,10 +48,20 @@ ccr.laa-preproduction.modernisation-platform.service.justice.gov.uk
 
 `my-application.nomis.hmpps-test.modernisation-platform.service.justice.gov.uk`
 
+### Custom
+
+`ppud.justice.gov.uk`
+
+#### Example
+
+`www.ppud.justice.gov.uk`
+
+`wam.ppud.justice.gov.uk`
+
 ### Production DNS
 
-Public facing services must have a `service.justice.gov.uk` domain name.
+Public facing services must have a `service.justice.gov.uk` domain name, excluding exceptional cases.
 
-See the MoJ Technical guidance on [Naming domains](https://technical-guidance.service.justice.gov.uk/documentation/standards/naming-domains.html#naming-domains) for more information.
+See the MoJ Technical guidance on [Naming domains](https://user-guide.operations-engineering.service.justice.gov.uk/documentation/services/domain-naming-standard.html) for more information.
 
 For more information on implementing DNS on the Modernisation Platform please see [How to configure DNS](../../user-guide/how-to-configure-dns.html)

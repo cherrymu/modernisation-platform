@@ -1,0 +1,74 @@
+{
+  "account-type": "member",
+  "environments": [
+    {
+      "name": "development",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-mojfin-developers",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-mojfin-database-access",
+          "level": "instance-management"
+        }
+      ]
+    },
+    {
+      "name": "test",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-mojfin-developers",
+          "level": "developer"
+        }
+      ]
+    },
+    {
+      "name": "preproduction",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-mojfin-developers",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-mojfin-database-access",
+          "level": "instance-management"
+        }
+      ]
+    },
+    {
+      "name": "production",
+      "access": [
+        {
+          "sso_group_name": "laa-aws-infrastructure",
+          "level": "developer"
+        },
+        {
+          "sso_group_name": "laa-mojfin-developers",
+          "level": "developer"
+        }
+      ]
+    }
+  ],
+  "tags": {
+    "application": "mojfin",
+    "business-unit": "LAA",
+    "infrastructure-support": "laa_ops@digital.justice.gov.uk",
+    "owner": "william.moran@justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""],
+  "go-live-date": "2023-07-05"
+}

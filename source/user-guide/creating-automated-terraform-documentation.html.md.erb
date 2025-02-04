@@ -1,20 +1,29 @@
 ---
 owner_slack: "#modernisation-platform"
 title: Creating Automated Terraform Documentation
-last_reviewed_on: 2022-04-26
+last_reviewed_on: 2024-11-11
 review_in: 6 months
 ---
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NXTCMQ7ZX6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NXTCMQ7ZX6');
+</script>
 
 # <%= current_page.data.title %>
 
 ## Overview
 
-The Modernisation Platform use a [Documentation GitHub Workflow](https://github.com/ministryofjustice/modernisation-platform-terraform-loadbalancer/blob/initial-commit/.github/workflows/documentation.yml) to automate Terraform documentation.
+The Modernisation Platform use a [Documentation GitHub Workflow](https://github.com/ministryofjustice/modernisation-platform/blob/main/.github/workflows/documentation.yml) to automate Terraform documentation.
 The workflow automatically searches then creates and populates tables using the variables, providers, modules, versions used in your Terraform code.
 
 ## Configuration to run documentation workflow
 
-1) Ensure you have a copy of [documentation.yml](https://github.com/ministryofjustice/modernisation-platform-terraform-loadbalancer/blob/initial-commit/.github/workflows/documentation.yml) in your `.github/workflows/` directory.
+1) Ensure you have a copy of [documentation.yml](https://github.com/ministryofjustice/modernisation-platform/blob/main/.github/workflows/documentation.yml) in your `.github/workflows/` directory.
 
 2) Create a top-level file called README.md in your repository.
 

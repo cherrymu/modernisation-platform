@@ -32,6 +32,19 @@ resource "pagerduty_escalation_policy" "low_priority" {
   }
 }
 
+resource "pagerduty_escalation_policy" "member_policy" {
+  name  = "Modernisation Platform Member Policy"
+  teams = [pagerduty_team.modernisation_platform_members.id]
+
+  rule {
+    escalation_delay_in_minutes = 10
+    target {
+      type = "user_reference"
+      id   = pagerduty_user.pager_duty_users["modernisation_platform"].id
+    }
+  }
+}
+
 resource "pagerduty_schedule" "primary" {
   name      = "Modernisation Platform (primary)"
   time_zone = "Europe/London"
@@ -53,7 +66,12 @@ resource "pagerduty_schedule" "primary" {
     users = [
       local.david_sibley,
       local.david_elliott,
-      local.stephen_linden
+      local.richard_green,
+      local.edward_proctor,
+      local.ewa_stempel,
+      local.mark_roberts,
+      local.aaron_robinson,
+      local.sukesh_reddygade
     ]
   }
 
@@ -78,8 +96,13 @@ resource "pagerduty_schedule" "secondary" {
     rotation_turn_length_seconds = 604800
     users = [
       local.david_elliott,
-      local.stephen_linden,
-      local.david_sibley
+      local.richard_green,
+      local.david_sibley,
+      local.ewa_stempel,
+      local.edward_proctor,
+      local.sukesh_reddygade,
+      local.mark_roberts,
+      local.aaron_robinson
     ]
   }
 

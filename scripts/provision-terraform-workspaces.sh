@@ -21,7 +21,7 @@
 
 iterate_environments_bootstrap() {
 # set friendly Parameter names
-BOOTSTRAP_TYPE="${1}"  # this value can equal (delegate-access, secure-baselines or single-sign-on)
+BOOTSTRAP_TYPE="${1}"  # this value can equal (delegate-access, secure-baselines, single-sign-on or member-bootstrap)
 
 
 # Loop through each application json file
@@ -56,18 +56,17 @@ create_tmp_terraform_files() {
   mkdir "${git_dir}/tmp"
 
   # Copy files to emulation folder
-  sed "s/\$application_name/${APPLICATION}/g" "${git_dir}/terraform/templates/backend.tf" > "${git_dir}/tmp/backend.tf"
-  sed "s/\$application_name/${APPLICATION}/g" "${git_dir}/terraform/templates/locals.tf" > "${git_dir}/tmp/locals.tf"
-  cp "${git_dir}/terraform/templates/providers.tf" "${git_dir}/tmp/providers.tf"
-  cp "${git_dir}/terraform/templates/platform_secrets.tf" "${git_dir}/tmp/platform_secrets.tf"
-  cp "${git_dir}/terraform/templates/versions.tf" "${git_dir}/tmp/versions.tf"
-  if [ `uname` = "Linux" ]
+
+  # copy the correct backend if environments or main repo (the other files are the same)
+  if [[ "${1}" == "environments-repo" ]]
   then
-    sed -i "s/environments\//environments\/accounts\//g" "${git_dir}/tmp/backend.tf"
+    sed "s/\$application_name/${APPLICATION}/g" "${git_dir}/terraform/templates/modernisation-platform-environments/platform_backend.tf" > "${git_dir}/tmp/platform_backend.tf"
   else
-    # This must be a Mac
-    sed -i '' "s/environments\//environments\/accounts\//g" "${git_dir}/tmp/backend.tf"
+    sed "s/\$application_name/${APPLICATION}/g" "${git_dir}/terraform/templates/modernisation-platform/backend.tf" > "${git_dir}/tmp/backend.tf" 
   fi
+  cp "${git_dir}/terraform/templates/modernisation-platform/providers.tf" "${git_dir}/tmp/providers.tf"
+  cp "${git_dir}/terraform/templates/modernisation-platform/secrets.tf" "${git_dir}/tmp/secrets.tf"
+  cp "${git_dir}/terraform/templates/modernisation-platform/versions.tf" "${git_dir}/tmp/versions.tf"
 }
 
 iterate_environments_member() {
@@ -83,11 +82,11 @@ do
   for ENV in `cat "${JSON_FILE}" | jq -r --arg FILENAME "${APPLICATION}" '.environments[].name'`
   do
     # Check if state file exists in S3 for modernisation-platform repository
-      aws s3api head-object --bucket modernisation-platform-terraform-state --key "environments/accounts/${APPLICATION}/${APPLICATION}-${ENV}/terraform.tfstate" > /dev/null 2>&1
-      RETURN_CODE_CORE_REPO="${?}"
-     # Check if state file exists in S3 for modernisation-platform-environments repository
-      aws s3api head-object --bucket modernisation-platform-terraform-state --key "environments/members/${APPLICATION}/${APPLICATION}-${ENV}/terraform.tfstate" > /dev/null 2>&1
-      RETURN_CODE_MEMBER_REPO="${?}"
+    aws s3api head-object --bucket modernisation-platform-terraform-state --key "environments/accounts/${APPLICATION}/${APPLICATION}-${ENV}/terraform.tfstate" > /dev/null 2>&1
+    RETURN_CODE_CORE_REPO="${?}"
+    # Check if state file exists in S3 for modernisation-platform-environments repository
+    aws s3api head-object --bucket modernisation-platform-terraform-state --key "environments/members/${APPLICATION}/${APPLICATION}-${ENV}/terraform.tfstate" > /dev/null 2>&1
+    RETURN_CODE_MEMBER_REPO="${?}"
 
     create_tmp_terraform_files
 
@@ -103,16 +102,7 @@ do
     fi
 
     # Creating MEMBER account state file for modernisation-platform-environments if it does not exist
-    create_tmp_terraform_files
-
-    # substitute backend state file location from accounts to members
-    if [ `uname` = "Linux" ]
-    then
-      sed -i "s/environments\/accounts\//environments\/members\//g" "${git_dir}/tmp/backend.tf"
-    else
-      # This must be a Mac
-      sed -i '' "s/environments\/accounts\//environments\/members\//g" "${git_dir}/tmp/backend.tf"
-    fi
+    create_tmp_terraform_files environments-repo
 
     ACCOUNT_TYPE=$(jq -r '."account-type"' ${JSON_FILE})
     if [[ "${RETURN_CODE_MEMBER_REPO}" -ne 0 && "${ACCOUNT_TYPE}" == "member" ]]
@@ -144,6 +134,7 @@ bootstrap)
   iterate_environments_bootstrap "delegate-access"
   iterate_environments_bootstrap "secure-baselines"
   iterate_environments_bootstrap "single-sign-on"
+  iterate_environments_bootstrap "member-bootstrap"
   ;;
 *)
   # This must be an individual application, check if json file exists for it

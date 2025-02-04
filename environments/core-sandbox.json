@@ -9,6 +9,9 @@
   "tags": {
     "application": "core-sandbox",
     "business-unit": "Platforms",
-    "owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk"
-  }
+    "infrastructure-support": "modernisation-platform@digital.justice.gov.uk",
+    "owner": "Modernisation Platform: modernisation-platform@digital.justice.gov.uk",
+    "critical-national-infrastructure": false
+  },
+  "github-oidc-team-repositories": [""]
 }
