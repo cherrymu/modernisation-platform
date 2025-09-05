@@ -76,7 +76,7 @@ jobs:
     
       - name: Setup Go
         if: ${{ steps.vars.outputs.run_terratest == 'true' }}
-        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
         with:
           go-version: 1.21
           cache-dependency-path: "${{ inputs.working-directory }}/test/go.sum"
@@ -88,7 +88,7 @@ jobs:
           echo ACCOUNT_NUMBER=$ACCOUNT_NUMBER >> $GITHUB_ENV
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # v5.0.0
         with:
           role-to-assume: "arn:aws:iam::${{ env.ACCOUNT_NUMBER }}:role/github-actions"
           role-session-name: githubactionsrolesession
@@ -140,7 +140,7 @@ jobs:
       - name: Post Warning & Check for Approval
         id: post_warning_check_approval
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         env:
           destroy_count: ${{ steps.get_destroy_count.outputs.destroy_count }}
           destroy_threshold: ${{ env.TF_DESTROY_THRESHOLD }}
@@ -167,7 +167,7 @@ jobs:
 
       - name: Post Comment
         if: github.event.ref != 'refs/heads/main'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
