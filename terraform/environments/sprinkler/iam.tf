@@ -54,15 +54,15 @@ data "aws_iam_policy_document" "oidc_deny_specific_actions" {
 
 # Terraform Read Only Role for use from Modernisation-Platform-Environments
 
-module "github_actions_terraform_read_only" {
+module "github_actions_environments_read_only" {
   source              = "github.com/ministryofjustice/modernisation-platform-github-oidc-role?ref=b40748ec162b446f8f8d282f767a85b6501fd192" # v4.0.0
   github_repositories = ["ministryofjustice/modernisation-platform-environments"]
-  role_name           = "github-actions-terraform-read-only"
-  policy_jsons        = [data.aws_iam_policy_document.github_actions_terraform_read_only.json]
+  role_name           = "github-actions-environments-read-only"
+  policy_jsons        = [data.aws_iam_policy_document.github_actions_environments_read_only.json]
   tags                = local.tags
 }
 
-data "aws_iam_policy_document" "github_actions_terraform_read_only" {
+data "aws_iam_policy_document" "github_actions_environments_read_only" {
   # checkov:skip=CKV_AWS_111: "Cannot restrict by KMS alias so leaving open"
   # checkov:skip=CKV_AWS_356: "Cannot restrict by KMS alias so leaving open"
   # checkov:skip=CKV_AWS_108: "Allowing secretsmanager:GetSecretValue with open resource due to specific use case"
@@ -110,17 +110,18 @@ data "aws_iam_policy_document" "github_actions_terraform_read_only" {
   }
 }
 
-module "github_actions_terraform_dev_test" {
+# Terraform For Non-Prod Envs Only.
+
+module "github_actions_environments_dev_test" {
   source              = "github.com/ministryofjustice/modernisation-platform-github-oidc-role?ref=b40748ec162b446f8f8d282f767a85b6501fd192" # v4.0.0
   github_repositories = ["ministryofjustice/modernisation-platform-environments"]
-  role_name           = "github-actions-terraform-dev-test"
-  policy_arns         = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-  policy_jsons        = [data.aws_iam_policy_document.github_actions_terraform_dev_test.json]
+  role_name           = "github-actions-environments-dev-test"
+  policy_jsons        = [data.aws_iam_policy_document.github_actions_environments_dev_test.json]
   tags                = local.tags
 }
 
 #trivy:ignore:AVD-AWS-0345: Required for OIDC role to access Terraform state in S3
-data "aws_iam_policy_document" "github_actions_terraform_dev_test" {
+data "aws_iam_policy_document" "github_actions_environments_dev_test" {
   # checkov:skip=CKV_AWS_111: "Cannot restrict by KMS alias so leaving open"
   # checkov:skip=CKV_AWS_356: "Cannot restrict by KMS alias so leaving open"
   statement {
