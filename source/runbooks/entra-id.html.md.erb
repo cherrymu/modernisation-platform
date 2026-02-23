@@ -26,6 +26,25 @@ flow from enterprise identity through to AWS, while platform automation keeps me
 
 ![EntraId SCIM overview](../images/entra-id-scim.png)
 
+## Troubleshooting and maintenance
+This section covers the high-level architecture of the EntraId integration, the key components, and
+how they interact, plus common maintenance tasks.
+Because the integration uses secrets in the Lambda job, these must be rotated every 90 days. The
+rotation process is manual and involves creating new secrets in the
+[Azure application manager](https://portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps), updating
+the AWS secret in Secrets Manager in the AWS root account, and then testing the integration to
+ensure it continues to function correctly. The diagram below shows how the components interact and
+where the secrets are used.
+
+![EntraId high level architecture](../images/EntraID.png)
+
+
+Currently the rotation process is manual, but there are plans to automate it to reduce operational
+overhead and ensure secrets are rotated on time.
+
+User authentication with AWS via Auth0, which has another app on EntraID. 
+This process is separate from the scim sync, so has it's own secrets and rotation process, but is also a critical part of the overall integration and user access flow.
+
 ## Why we use it
 The Modernisation Platform has adopted EntraId as an identity provider for AWS account access and
 management. This decision was driven by several key factors:
