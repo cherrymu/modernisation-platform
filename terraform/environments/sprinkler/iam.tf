@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "github_actions_environments_read_only" {
     resources = [
       "arn:aws:iam::${data.aws_ssm_parameter.modernisation_platform_account_id.value}:role/modernisation-account-limited-read-member-access",
       "arn:aws:iam::${local.environment_management.account_ids["core-network-services-production"]}:role/modernisation-account-limited-read-member-access",
-      "arn:aws:iam::${local.environment_management.account_ids["core-network-services-production"]}:role/modify-dns-records",
+      "arn:aws:iam::${local.environment_management.account_ids["core-network-services-production"]}:role/read-log-records",
       "arn:aws:iam::${local.environment_management.account_ids["core-vpc-sandbox"]}:role/member-delegation-garden-sandbox"
     ]
   }
@@ -140,7 +140,7 @@ data "aws_iam_policy_document" "github_actions_environments_dev_test" {
     resources = [
       "arn:aws:iam::${data.aws_ssm_parameter.modernisation_platform_account_id.value}:role/modernisation-account-limited-read-member-access",
       "arn:aws:iam::${local.environment_management.account_ids["core-network-services-production"]}:role/modernisation-account-limited-read-member-access",
-      "arn:aws:iam::${local.environment_management.account_ids["core-network-services-production"]}:role/read-log-records",
+      "arn:aws:iam::${local.environment_management.account_ids["core-network-services-production"]}:role/modify-dns-records",
       "arn:aws:iam::${local.environment_management.account_ids["core-vpc-sandbox"]}:role/member-delegation-garden-sandbox"
     ]
   }
