@@ -297,7 +297,7 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
   }
 
   statement {
-    sid     = "AllowGithubActionsTerraformPlanOnlyPutLock"
+    sid     = "AllowGithubActionsTerraformReadOnlyPutLock"
     effect  = "Allow"
     actions = ["s3:PutObject"]
     resources = [
@@ -318,7 +318,7 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
     condition {
       test     = "ForAnyValue:StringLike"
       variable = "aws:PrincipalArn"
-      values   = ["arn:aws:iam::*:role/github-actions-environments-plan-only"]
+      values   = ["arn:aws:iam::*:role/github-actions-environments-read-only"]
     }
   }
 
@@ -344,7 +344,7 @@ data "aws_iam_policy_document" "allow-state-access-from-root-account" {
     condition {
       test     = "ForAnyValue:StringLike"
       variable = "aws:PrincipalArn"
-      values   = ["arn:aws:iam::*:role/github-actions", "arn:aws:iam::*:role/github-actions-environments-plan-only", "arn:aws:iam::*:role/github-actions-environments-dev-test"]
+      values   = ["arn:aws:iam::*:role/github-actions", "arn:aws:iam::*:role/github-actions-environments-read-only", "arn:aws:iam::*:role/github-actions-environments-dev-test"]
     }
   }
 
