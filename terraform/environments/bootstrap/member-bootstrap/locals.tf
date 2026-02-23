@@ -26,14 +26,14 @@ data "aws_iam_role" "sprinkler_oidc" {
   name  = "github-actions"
 }
 
-data "aws_iam_role" "sprinkler_terraform_read_only" {
+data "aws_iam_role" "sprinkler_environments_read_only" {
   count = (terraform.workspace == "sprinkler-development") ? 1 : 0
-  name  = "github-actions-terraform-read-only"
+  name  = "github-actions-environments-read-only"
 }
 
-data "aws_iam_role" "sprinkler_terraform_dev_test" {
+data "aws_iam_role" "sprinkler_environments_dev_test" {
   count = (terraform.workspace == "sprinkler-development") ? 1 : 0
-  name  = "github-actions-terraform-dev-test"
+  name  = "github-actions-environments-dev-test"
 }
 
 data "http" "environments_file" {
