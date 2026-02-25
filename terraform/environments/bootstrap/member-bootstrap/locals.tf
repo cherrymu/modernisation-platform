@@ -55,6 +55,7 @@ locals {
 
   tags = {
     business-unit = "Platforms"
+    service-area  = "Hosting"
     application   = "Modernisation Platform: Member Bootstrap"
     is-production = true
     owner         = "Modernisation Platform: modernisation-platform@digital.justice.gov.uk"

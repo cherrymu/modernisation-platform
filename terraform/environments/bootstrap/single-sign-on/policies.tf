@@ -611,6 +611,7 @@ data "aws_iam_policy_document" "platform_engineer_additional_additional" {
       "apigateway:*",
       "application-autoscaling:*",
       "appstream:*",
+      "aps:*",
       "athena:*",
       "autoscaling:*",
       "aws-marketplace:ViewSubscriptions",

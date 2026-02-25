@@ -92,7 +92,6 @@ data "aws_iam_policy_document" "ecr_repo_policy" {
       }
     }
   }
-  
 }
 
 resource "aws_ecr_repository_policy" "ecr_repository_policy" {

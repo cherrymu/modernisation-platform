@@ -1173,7 +1173,6 @@ module "electronic_monitoring_ears_sars_ecr_repo" {
   tags_common = local.tags
 }
 
-
 module "electronic_monitoring_emds_gdpr_ecr_repo" {
   source = "../../modules/app-ecr-repo"
 
