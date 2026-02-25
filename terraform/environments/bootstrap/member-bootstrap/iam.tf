@@ -1320,7 +1320,7 @@ module "github_actions_terraform_dev_test" {
   github_repositories = ["ministryofjustice/modernisation-platform-environments"]
   role_name           = "github-actions-terraform-dev-test"
   policy_jsons        = [data.aws_iam_policy_document.github_actions_terraform_dev_test[0].json]
-  tags                = { "Name" = "github-actions-terraform-dev-test", "service-area" = "Hosting" }
+  tags                = { "Name" = "github-actions-terraform-dev-test" }
 }
 
 #trivy:ignore:AVD-AWS-0345: Required for OIDC role to access Terraform state in S3
