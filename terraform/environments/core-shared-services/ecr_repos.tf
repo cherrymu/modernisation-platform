@@ -1201,13 +1201,6 @@ module "electronic_monitoring_emds_gdpr_ecr_repo" {
     "arn:aws:iam::${local.environment_management.account_ids["electronic-monitoring-data-production"]}:role/emds-gdpr-execution-role"
   ]
 
-  enable_retrieval_policy_for_ecs_tasks = [
-    "arn:aws:ecs:eu-west-2:${local.environment_management.account_ids["electronic-monitoring-data-development"]}:task/*",
-    "arn:aws:ecs:eu-west-2:${local.environment_management.account_ids["electronic-monitoring-data-preproduction"]}:task/*",
-    "arn:aws:ecs:eu-west-2:${local.environment_management.account_ids["electronic-monitoring-data-production"]}:task/*",
-    "arn:aws:ecs:eu-west-2:${local.environment_management.account_ids["electronic-monitoring-data-test"]}:task/*",
-  ]
-
   # Tags
   tags_common = local.tags
 }
