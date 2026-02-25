@@ -25,3 +25,9 @@ variable "enable_retrieval_policy_for_lambdas" {
   type        = list(string)
   default     = []
 }
+
+variable "enable_retrieval_policy_for_ecs_tasks" {
+  description = "If set then it will add ECR Image Retrieval Policy for the given ecs tasks"
+  type        = list(string)
+  default     = []
+}
