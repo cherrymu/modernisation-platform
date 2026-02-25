@@ -92,6 +92,31 @@ data "aws_iam_policy_document" "ecr_repo_policy" {
       }
     }
   }
+  
+  dynamic "statement" {
+    for_each = length(var.enable_retrieval_policy_for_ecs_tasks) > 0 ? [1] : []
+
+    content {
+      sid    = "EcsECRImageRetrievalPolicy"
+      effect = "Allow"
+      actions = [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:SetRepositoryPolicy",
+        "ecr:DeleteRepositoryPolicy",
+        "ecr:GetRepositoryPolicy"
+      ]
+      principals {
+        type        = "Service"
+        identifiers = ["ecs-tasks.amazonaws.com"]
+      }
+      condition {
+        test     = "StringLike"
+        variable = "aws:sourceArn"
+        values   = var.enable_retrieval_policy_for_ecs_tasks
+      }
+    }
+  }
 }
 
 resource "aws_ecr_repository_policy" "ecr_repository_policy" {
