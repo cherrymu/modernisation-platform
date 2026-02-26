@@ -418,12 +418,12 @@ locals {
         aliases                             = ["fs.azure.hmpp.root", "fslinux.azure.hmpp.root"]
         deployment_type                     = "MULTI_AZ_1"
         security_group_name                 = "ad_hmpp_fsx_sg"
-        storage_capacity                    = 100
+        storage_capacity                    = 1000
         subnet_ids = [
           aws_subnet.live-data-additional["eu-west-2a"].id,
           aws_subnet.live-data-additional["eu-west-2b"].id,
         ]
-        throughput_capacity           = 32
+        throughput_capacity           = 128
         weekly_maintenance_start_time = "4:04:00" # thu 4am
       }
     }
