@@ -615,5 +615,5 @@
     "destination_ip": "${laa-production}",
     "destination_port": "1521",
     "protocol": "TCP"
-  },
+  }
 }
