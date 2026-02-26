@@ -4,7 +4,7 @@ Date: 2026-02-13
 
 ## Status
 
-🤔 Proposed
+✅ Accepted
 
 ## Context
 We have always used GitHub Teams to enable access to our AWS Accounts because it is convenient for developers -- but GitHub is not an Enterprise Identity Access Management (IdAM) Solution.
