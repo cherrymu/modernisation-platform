@@ -22,7 +22,7 @@ jobs:
           persist-credentials: true
 
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.x'
 
@@ -164,7 +164,7 @@ jobs:
 
       - name: Create a signed commit for new accounts
         if: env.EXISTING_ACCOUNT == 'No'
-        uses: ministryofjustice/modernisation-platform-github-actions/signed-commit@d467c7fb1bbeb73162ea736ca13adc8ba2ae74f8 # v6.2.5
+        uses: ministryofjustice/modernisation-platform-github-actions/signed-commit@5ec14e836f3de882a84f1c0b919645846a9d4f8e # v6.2.13
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: "Automated environment request for $APP_NAME"
@@ -173,7 +173,7 @@ jobs:
 
       - name: Commit changes for existing accounts
         if: env.EXISTING_ACCOUNT == 'Yes'
-        uses: ministryofjustice/modernisation-platform-github-actions/signed-commit@d467c7fb1bbeb73162ea736ca13adc8ba2ae74f8 # v6.2.5
+        uses: ministryofjustice/modernisation-platform-github-actions/signed-commit@5ec14e836f3de882a84f1c0b919645846a9d4f8e # v6.2.13
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: "Automated environment amendment request for $APP_NAME"
@@ -192,7 +192,7 @@ jobs:
       - name: Save network setup info
         run: |
           echo "{\"pr_number\": ${{ github.event.pull_request.number }}, ISOLATED_ACCOUNT, \"app_name\": \"$APP_NAME\", \"business_unit\": \"$BUSINESS_UNIT\", \"environments\": $(echo "$ENV_SELECTIONS_JSON" | jq -c 'map(.name)')}" > network-setup-info.json
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: network-setup-info
           path: network-setup-info.json
